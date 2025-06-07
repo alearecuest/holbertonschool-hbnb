@@ -56,8 +56,7 @@ BUSINESS LOGIC LAYER (TASK 1)
        attributes, methods, and the relationships between them.
 
    2.1. Class Diagram
-   
-       ![image](https://github.com/user-attachments/assets/9de34399-cb4c-4fe2-ae64-7d2c5cc84ab2)
+   ![image](https://github.com/user-attachments/assets/9de34399-cb4c-4fe2-ae64-7d2c5cc84ab2)
 
    2.2. Explanatory Notes
        BaseEntity (Abstract)
