@@ -169,5 +169,6 @@ REPOSITORY
 
 AUTHOR
        Written by the HBnB Evolution Project Team. ARÉVALO, Alejandro; CABRERA, Nahuel; ROMERO, Emmanuel
+       https://www.canva.com/design/DAGpfUrJxKo/L0_rbOM893847rZDCDUI-A/edit?utm_content=DAGpfUrJxKo&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
 HBNB Evolution Project
