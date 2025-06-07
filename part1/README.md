@@ -102,7 +102,6 @@ API INTERACTION FLOW (TASK 2)
 
    3.1. User Registration (`POST /api/users`)
        This diagram shows the process of registering a new user.
-       
        ![image](https://github.com/user-attachments/assets/cdf9a7f0-c059-45ca-aec9-f72945faf819)
 
        1. The Client sends a `POST` request to the API with user data.
@@ -119,8 +118,8 @@ API INTERACTION FLOW (TASK 2)
 
    3.2. Place Creation (`POST /api/places`)
        This diagram illustrates how an authenticated user lists a new place.
-
        ![image (1)](https://github.com/user-attachments/assets/859a5f2f-2ff4-4898-ab0f-af377bddc643)
+       
 
        1. The Client sends a `POST` request with the place data.
        2. The Presentation Layer (API) validates the data. If invalid, it
@@ -133,8 +132,8 @@ API INTERACTION FLOW (TASK 2)
 
    3.3. Review Submission (`POST /api/reviews`)
        This diagram shows the flow for a user to post a review for a place.
-
        ![image (2)](https://github.com/user-attachments/assets/c5bc2195-6c7b-4610-95d7-137d9fd8f6b7)
+       
 
        1. The Client sends a `POST` request with review data.
        2. The Presentation Layer (API) validates the data. If invalid, it returns
@@ -148,8 +147,8 @@ API INTERACTION FLOW (TASK 2)
 
    3.4. Fetching a List of Places (`GET /api/places`)
        This diagram describes how a list of places is retrieved.
-
        ![image (3)](https://github.com/user-attachments/assets/53194610-3cd9-4f89-b963-117d0e3a7380)
+       
 
        1. The Client sends a `GET /api/places` request, optionally with filters.
        2. The Presentation Layer (API) parses the filter parameters.
