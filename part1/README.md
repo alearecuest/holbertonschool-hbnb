@@ -170,4 +170,4 @@ REPOSITORY
 AUTHOR
        Written by the HBnB Evolution Project Team. ARÉVALO, Alejandro; CABRERA, Nahuel; ROMERO, Emmanuel
 
-HBNB Evolution Project           June 2025
+HBNB Evolution Project
