@@ -1,4 +1,6 @@
-HBNB-EVOLUTION-DOCS         HBnB Project Manual        
+HBNB-EVOLUTION-DOCS         
+                            
+                            HBnB Project Manual        
 
 NAME
        hbnb-evolution-docs - Technical Documentation for the HBnB Evolution Project
@@ -25,7 +27,7 @@ ARCHITECTURE (TASK 0)
 
    1.1. Package Diagram
    
-       ![diagrama1 (1)](https://github.com/user-attachments/assets/01b2e99c-f9d5-4eca-b832-7ee140a96613)
+   ![diagrama1 (1)](https://github.com/user-attachments/assets/01b2e99c-f9d5-4eca-b832-7ee140a96613)
 
    1.2. Explanatory Notes
        Presentation Layer
