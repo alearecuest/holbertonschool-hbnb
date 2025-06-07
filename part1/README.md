@@ -102,6 +102,7 @@ API INTERACTION FLOW (TASK 2)
 
    3.1. User Registration (`POST /api/users`)
        This diagram shows the process of registering a new user.
+       
        ![image](https://github.com/user-attachments/assets/cdf9a7f0-c059-45ca-aec9-f72945faf819)
 
        1. The Client sends a `POST` request to the API with user data.
@@ -118,6 +119,7 @@ API INTERACTION FLOW (TASK 2)
 
    3.2. Place Creation (`POST /api/places`)
        This diagram illustrates how an authenticated user lists a new place.
+       
        ![image (1)](https://github.com/user-attachments/assets/859a5f2f-2ff4-4898-ab0f-af377bddc643)
        
 
@@ -147,6 +149,7 @@ API INTERACTION FLOW (TASK 2)
 
    3.4. Fetching a List of Places (`GET /api/places`)
        This diagram describes how a list of places is retrieved.
+       
        ![image (3)](https://github.com/user-attachments/assets/53194610-3cd9-4f89-b963-117d0e3a7380)
        
 
@@ -165,6 +168,6 @@ REPOSITORY
        Directory:         part1
 
 AUTHOR
-       Written by the HBnB Evolution Project Team.
+       Written by the HBnB Evolution Project Team. ARÉVALO, Alejandro; CABRERA, Nahuel; ROMERO, Emmanuel
 
-HBNB Evolution Project           June 2025            HBNB-EVOLUTION-DOCS(1)
+HBNB Evolution Project           June 2025
