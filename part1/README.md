@@ -102,7 +102,7 @@ API INTERACTION FLOW (TASK 2)
 
    3.1. User Registration (`POST /api/users`)
        This diagram shows the process of registering a new user.
-
+       
        ![image](https://github.com/user-attachments/assets/cdf9a7f0-c059-45ca-aec9-f72945faf819)
 
        1. The Client sends a `POST` request to the API with user data.
