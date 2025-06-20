@@ -60,9 +60,14 @@ class BaseModel:
         obj_dict["created_at"] = self.created_at.isoformat()
         obj_dict["updated_at"] = self.updated_at.isoformat()
         
+        # Handle relationships by converting to IDs instead of objects
         for key, value in obj_dict.items():
             if isinstance(value, list) and len(value) > 0 and isinstance(value[0], BaseModel):
                 obj_dict[key] = [item.id for item in value]
+        
+        # Remove password for security
+        if "password" in obj_dict:
+            del obj_dict["password"]
         
         return obj_dict
 

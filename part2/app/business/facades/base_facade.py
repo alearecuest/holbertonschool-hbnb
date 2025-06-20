@@ -6,7 +6,7 @@ Base facade for the HBnB project
 
 class BaseFacade:
     """
-    Base facade class that provides a simplified interface to the business logic
+    Base facade class that provides a simplified interface to repository operations
     """
 
     def __init__(self, repository):
@@ -17,18 +17,6 @@ class BaseFacade:
             repository: The repository to use for persistence
         """
         self.repository = repository
-
-    def create(self, data):
-        """
-        Create a new entity
-
-        Args:
-            data: Dictionary of attributes for the new entity
-
-        Returns:
-            The created entity
-        """
-        raise NotImplementedError("Subclasses must implement this method")
 
     def get_by_id(self, entity_id):
         """
@@ -51,6 +39,18 @@ class BaseFacade:
         """
         return self.repository.all()
 
+    def create(self, data):
+        """
+        Create a new entity
+
+        Args:
+            data: Dictionary of entity attributes
+
+        Returns:
+            The created entity
+        """
+        raise NotImplementedError("Subclasses must implement this method")
+
     def update(self, entity_id, data):
         """
         Update an entity
@@ -72,6 +72,9 @@ class BaseFacade:
             entity_id: The ID of the entity to delete
 
         Returns:
-            True if the entity was deleted, False otherwise
+            True if successful, False otherwise
         """
+        entity = self.repository.get(entity_id)
+        if not entity:
+            return False
         return self.repository.delete(entity_id)

@@ -1,4 +1,4 @@
 #!/usr/bin/python3
 """
-Repository package for persistence layer
+Persistence layer package for the HBnB project
 """
