@@ -37,6 +37,14 @@ class BaseModel:
         return "[{}] ({}) {}".format(
             self.__class__.__name__, self.id, self.__dict__)
 
+    def __eq__(self, other):
+        """
+        Check if two model instances are equal (based on ID)
+        """
+        if not isinstance(other, BaseModel):
+            return False
+        return self.id == other.id
+
     def save(self):
         """
         Update the updated_at attribute with current datetime
@@ -51,4 +59,25 @@ class BaseModel:
         obj_dict["__class__"] = self.__class__.__name__
         obj_dict["created_at"] = self.created_at.isoformat()
         obj_dict["updated_at"] = self.updated_at.isoformat()
+        
+        for key, value in obj_dict.items():
+            if isinstance(value, list) and len(value) > 0 and isinstance(value[0], BaseModel):
+                obj_dict[key] = [item.id for item in value]
+        
         return obj_dict
+
+    @classmethod
+    def from_dict(cls, data):
+        """
+        Create a new instance from a dictionary
+
+        Args:
+            data: Dictionary containing attribute values
+
+        Returns:
+            A new instance of the class
+        """
+        if data.get("__class__", "") != cls.__name__:
+            data = data.copy()
+            data["__class__"] = cls.__name__
+        return cls(**data)
