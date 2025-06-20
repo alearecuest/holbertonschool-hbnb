@@ -1,22 +1,21 @@
-HBnB - BL and API
+# HBnB Project
 
 ## Overview
-HBnB is an AirBnB clone project developed as part of the Holberton School curriculum. This application allows users to list, search, and book places for accommodation, similar to the AirBnB platform.
+HBnB (Holberton BnB) is a RESTful API for a vacation rental platform.
 
 ## Project Structure
-The project follows a multi-layer architecture:
-- **Presentation Layer**: Handles API endpoints and user interfaces
-- **Business Logic Layer**: Contains core application logic and business rules
-- **Persistence Layer**: Manages data storage and retrieval
+- `app/`: Core application code
+  - `api/`: API endpoints (v1)
+  - `models/`: Business logic classes
+  - `services/`: Facade pattern implementation
+  - `persistence/`: Repository implementation
+- `run.py`: Entry point for running the application
+- `config.py`: Configuration settings
+- `requirements.txt`: Python package dependencies
 
-## Features
-- User management (registration, authentication)
-- Place listings (create, read, update, delete)
-- Booking management
-- Reviews and ratings
-- Amenity listings
+## Installation
 
-## Technology Stack
-- Backend: Python, Flask
-- Database: (To be determined)
-- API Documentation: flask-restx
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd hbnb

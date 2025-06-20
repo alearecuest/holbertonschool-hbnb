@@ -1,8 +1,0 @@
-Metadata-Version: 2.4
-Name: hbnb
-Version: 0.1
-Requires-Dist: flask==2.0.1
-Requires-Dist: flask-restx==0.5.1
-Requires-Dist: Werkzeug==2.0.1
-Requires-Dist: requests==2.25.1
-Dynamic: requires-dist
