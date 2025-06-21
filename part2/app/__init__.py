@@ -20,9 +20,10 @@ def create_app():
             "name": "HBnB API",
             "version": "1.0",
             "author": "alearecuest",
-            "last_updated": "2025-06-21 03:30:44",
+            "last_updated": "2025-06-21 03:38:59",
             "documentation": "/api/v1",
             "endpoints": {
+                "users": "/api/v1/users",
                 "amenities": "/api/v1/amenities"
             }
         })
@@ -37,15 +38,10 @@ def create_app():
         doc='/api/v1'
     )
     
+    from app.api.v1.users import api as users_ns
     from app.api.v1.amenities import api as amenities_ns
     
+    api.add_namespace(users_ns, path='/users')
     api.add_namespace(amenities_ns, path='/amenities')
-    
-    @app.before_first_request
-    def log_routes():
-        """Log all available routes"""
-        print("\n=== Available Routes ===")
-        for rule in app.url_map.iter_rules():
-            print(f"{rule.endpoint}: {rule}")
     
     return app

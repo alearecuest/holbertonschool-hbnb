@@ -1,73 +1,101 @@
 #!/usr/bin/python3
 """
-Facade service for the HBnB project
+Facade service for the HBnB application
 """
-from app.persistence.repository import InMemoryRepository
+from app.repositories.in_memory_repository import InMemoryRepository
+from app.models.user import User
 from app.models.amenity import Amenity
 
 
 class HBnBFacade:
-    """
-    HBnB facade class that provides a simplified interface to business logic operations
-    """
+    """Facade for handling business logic operations"""
 
     def __init__(self):
-        """
-        Initialize a new HBnBFacade instance
-        """
+        """Initialize repositories for different entities"""
         self.user_repo = InMemoryRepository()
-        self.place_repo = InMemoryRepository()
-        self.review_repo = InMemoryRepository()
         self.amenity_repo = InMemoryRepository()
 
     def create_user(self, user_data):
         """
-        Create a new user (placeholder)
+        Create a new user
+
+        Args:
+            user_data (dict): Data for the new user
+
+        Returns:
+            User: The created user
         """
-        pass
+        user = User(**user_data)
+        return self.user_repo.add(user)
 
     def get_user(self, user_id):
         """
-        Get a user by ID (placeholder)
+        Get a user by ID
+
+        Args:
+            user_id (str): ID of the user
+
+        Returns:
+            User: The found user or None
         """
-        pass
+        return self.user_repo.get(user_id)
 
     def get_all_users(self):
         """
-        Get all users (placeholder)
-        """
-        pass
+        Get all users
 
-    def update_user(self, user_id, user_data):
+        Returns:
+            list: List of all users
         """
-        Update a user (placeholder)
-        """
-        pass
+        return self.user_repo.get_all()
 
-    def create_amenity(self, amenity_data):
+    def update_user(self, user_id, data):
+        """
+        Update a user
+
+        Args:
+            user_id (str): ID of the user
+            data (dict): New data for the user
+
+        Returns:
+            User: The updated user or None
+        """
+        return self.user_repo.update(user_id, data)
+
+    def get_user_by_email(self, email):
+        """
+        Get a user by email
+
+        Args:
+            email (str): Email of the user
+
+        Returns:
+            User: The found user or None
+        """
+        return self.user_repo.get_by_attribute('email', email)
+
+    def create_amenity(self, data):
         """
         Create a new amenity
 
         Args:
-            amenity_data: Dictionary of amenity attributes
+            data (dict): Data for the new amenity
 
         Returns:
-            The created amenity
+            Amenity: The created amenity
         """
-        amenity = Amenity(**amenity_data)
-        amenity.validate()
-        self.amenity_repo.add(amenity)
-        return amenity
+        amenity = Amenity(**data)
+        return self.amenity_repo.add(amenity)
 
     def get_amenity(self, amenity_id):
         """
         Get an amenity by ID
 
         Args:
-            amenity_id: The ID of the amenity to get
+            amenity_id (str): ID of the amenity
 
         Returns:
-            The amenity if found, None otherwise
+            Amenity: The found amenity or None
         """
         return self.amenity_repo.get(amenity_id)
 
@@ -76,30 +104,49 @@ class HBnBFacade:
         Get all amenities
 
         Returns:
-            A list of all amenities
+            list: List of all amenities
         """
         return self.amenity_repo.get_all()
 
-    def update_amenity(self, amenity_id, amenity_data):
+    def update_amenity(self, amenity_id, data):
         """
         Update an amenity
 
         Args:
-            amenity_id: The ID of the amenity to update
-            amenity_data: Dictionary of attributes to update
+            amenity_id (str): ID of the amenity
+            data (dict): New data for the amenity
 
         Returns:
-            The updated amenity if successful, None otherwise
+            Amenity: The updated amenity or None
         """
-        amenity = self.amenity_repo.get(amenity_id)
-        if not amenity:
-            return None
+        return self.amenity_repo.update(amenity_id, data)
 
-        amenity.update(amenity_data)
 
-        try:
-            amenity.validate()
-        except ValueError as e:
-            raise ValueError(f"Validation error: {str(e)}")
-        
-        return amenity
+_facade = HBnBFacade()
+
+def create_user(user_data):
+    return _facade.create_user(user_data)
+
+def get_user(user_id):
+    return _facade.get_user(user_id)
+
+def get_all_users():
+    return _facade.get_all_users()
+
+def update_user(user_id, data):
+    return _facade.update_user(user_id, data)
+
+def get_user_by_email(email):
+    return _facade.get_user_by_email(email)
+
+def create_amenity(data):
+    return _facade.create_amenity(data)
+
+def get_amenity(amenity_id):
+    return _facade.get_amenity(amenity_id)
+
+def get_all_amenities():
+    return _facade.get_all_amenities()
+
+def update_amenity(amenity_id, data):
+    return _facade.update_amenity(amenity_id, data)
