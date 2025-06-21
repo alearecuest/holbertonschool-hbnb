@@ -4,6 +4,7 @@ Amenity API endpoints for the HBnB project
 """
 from flask import request
 from flask_restx import Namespace, Resource, fields
+from app.models.amenity import Amenity
 from app.services import facade
 
 api = Namespace('amenities', description='Amenity operations')
@@ -24,6 +25,7 @@ amenity_response_model = api.model('AmenityResponse', {
 
 @api.route('/')
 class AmenityList(Resource):
+    @api.doc('create_amenity')
     @api.expect(amenity_model)
     @api.response(201, 'Amenity successfully created', amenity_response_model)
     @api.response(400, 'Invalid input data')
@@ -37,6 +39,7 @@ class AmenityList(Resource):
         except ValueError as e:
             api.abort(400, str(e))
 
+    @api.doc('list_amenities')
     @api.response(200, 'List of amenities retrieved successfully', [amenity_response_model])
     @api.marshal_list_with(amenity_response_model)
     def get(self):
@@ -48,6 +51,7 @@ class AmenityList(Resource):
 @api.route('/<string:amenity_id>')
 @api.param('amenity_id', 'The amenity identifier')
 class AmenityResource(Resource):
+    @api.doc('get_amenity')
     @api.response(200, 'Amenity details retrieved successfully', amenity_response_model)
     @api.response(404, 'Amenity not found')
     @api.marshal_with(amenity_response_model)
@@ -58,6 +62,7 @@ class AmenityResource(Resource):
             api.abort(404, f"Amenity with ID {amenity_id} not found")
         return amenity.to_dict()
 
+    @api.doc('update_amenity')
     @api.expect(amenity_model)
     @api.response(200, 'Amenity updated successfully', amenity_response_model)
     @api.response(404, 'Amenity not found')

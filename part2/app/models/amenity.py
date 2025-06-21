@@ -1,78 +1,41 @@
 #!/usr/bin/python3
 """
 Amenity model for the HBnB project
+
+Author: alearecuest
+Last updated: 2025-06-21 02:52:13
 """
-import uuid
-from datetime import datetime
+from app.models.base_model import BaseModel
 
 
-class Amenity:
-    """
-    Amenity class for representing amenities in the HBnB application
-    """
+class Amenity(BaseModel):
+    """Amenity class for representing amenities in the HBnB application"""
 
-    def __init__(self, name, description=None, id=None, created_at=None, updated_at=None):
+    def __init__(self, name, description=None, **kwargs):
         """
         Initialize a new Amenity instance
 
         Args:
-            name (str): The name of the amenity
-            description (str, optional): The description of the amenity
-            id (str, optional): The ID of the amenity. Defaults to a new UUID.
-            created_at (datetime, optional): The creation timestamp. Defaults to now.
-            updated_at (datetime, optional): The update timestamp. Defaults to now.
+            name (str): Name of the amenity
+            description (str, optional): Description of the amenity
+            **kwargs: Additional attributes to set
         """
-        self.id = id or str(uuid.uuid4())
+        super().__init__(**kwargs)
         self.name = name
         self.description = description
-        self.created_at = created_at or datetime.utcnow()
-        self.updated_at = updated_at or self.created_at
-
-    def update(self, data):
-        """
-        Update the amenity with new data
-
-        Args:
-            data (dict): The data to update the amenity with
-        """
-        for key, value in data.items():
-            if key not in ['id', 'created_at']:
-                setattr(self, key, value)
-        self.updated_at = datetime.utcnow()
+        self.validate()
 
     def validate(self):
         """
-        Validate the amenity
+        Validate amenity attributes
 
         Raises:
-            ValueError: If any required fields are missing or invalid
+            ValueError: If any validation fails
         """
-        if not self.name or not isinstance(self.name, str) or len(self.name) == 0:
-            raise ValueError("Amenity name is required and must be a non-empty string")
-        
+        if not self.name or not isinstance(self.name, str):
+            raise ValueError("Amenity name is required and must be a string")
+        if len(self.name) > 50:
+            raise ValueError("Amenity name must be at most 50 characters")
+            
         if self.description is not None and not isinstance(self.description, str):
-            raise ValueError("Amenity description must be a string")
-
-    def to_dict(self):
-        """
-        Convert the amenity to a dictionary
-
-        Returns:
-            dict: A dictionary representation of the amenity
-        """
-        return {
-            'id': self.id,
-            'name': self.name,
-            'description': self.description,
-            'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat()
-        }
-
-    def __str__(self):
-        """
-        Get a string representation of the amenity
-
-        Returns:
-            str: A string representation of the amenity
-        """
-        return "[Amenity] ({}) {}".format(self.id, self.__dict__)
+            raise ValueError("Description must be a string")
