@@ -83,6 +83,9 @@ class HBnBFacade:
 
         Returns:
             Amenity: The created amenity
+            
+        Raises:
+            ValueError: If amenity data is invalid
         """
         amenity = Amenity(**data)
         return self.amenity_repo.add(amenity)
@@ -125,28 +128,45 @@ class HBnBFacade:
 _facade = HBnBFacade()
 
 def create_user(user_data):
+    """Create a new user"""
     return _facade.create_user(user_data)
 
+
 def get_user(user_id):
+    """Get a user by ID"""
     return _facade.get_user(user_id)
 
+
 def get_all_users():
+    """Get all users"""
     return _facade.get_all_users()
 
+
 def update_user(user_id, data):
+    """Update a user"""
     return _facade.update_user(user_id, data)
 
+
 def get_user_by_email(email):
+    """Get a user by email"""
     return _facade.get_user_by_email(email)
 
+
 def create_amenity(data):
+    """Create a new amenity"""
     return _facade.create_amenity(data)
 
+
 def get_amenity(amenity_id):
+    """Get an amenity by ID"""
     return _facade.get_amenity(amenity_id)
 
+
 def get_all_amenities():
+    """Get all amenities"""
     return _facade.get_all_amenities()
 
+
 def update_amenity(amenity_id, data):
+    """Update an amenity"""
     return _facade.update_amenity(amenity_id, data)

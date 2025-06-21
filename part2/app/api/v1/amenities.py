@@ -4,7 +4,6 @@ Amenity API endpoints for the HBnB project
 """
 from flask import request
 from flask_restx import Namespace, Resource, fields
-from app.models.amenity import Amenity
 from app.services import facade
 
 api = Namespace('amenities', description='Amenity operations')
@@ -32,10 +31,12 @@ class AmenityList(Resource):
     @api.marshal_with(amenity_response_model, code=201)
     def post(self):
         """Register a new amenity"""
-        data = request.json
+        amenity_data = request.json
+        
         try:
-            amenity = facade.create_amenity(data)
-            return amenity.to_dict(), 201
+            # Create new amenity
+            new_amenity = facade.create_amenity(amenity_data)
+            return new_amenity.to_dict(), 201
         except ValueError as e:
             api.abort(400, str(e))
 
@@ -67,14 +68,23 @@ class AmenityResource(Resource):
     @api.response(200, 'Amenity updated successfully', amenity_response_model)
     @api.response(404, 'Amenity not found')
     @api.response(400, 'Invalid input data')
+    @api.response(500, 'Server error')
     @api.marshal_with(amenity_response_model)
     def put(self, amenity_id):
         """Update an amenity's information"""
+        amenity = facade.get_amenity(amenity_id)
+        if not amenity:
+            api.abort(404, f"Amenity with ID {amenity_id} not found")
+        
         data = request.json
+        
         try:
-            amenity = facade.update_amenity(amenity_id, data)
-            if not amenity:
-                api.abort(404, f"Amenity with ID {amenity_id} not found")
-            return amenity.to_dict()
+            updated_amenity = facade.update_amenity(amenity_id, data)
+            if not updated_amenity:
+                api.abort(404, f"Failed to update amenity with ID {amenity_id}")
+            return updated_amenity.to_dict()
         except ValueError as e:
             api.abort(400, str(e))
+        except Exception as e:
+            print(f"Unexpected error updating amenity: {str(e)}")
+            api.abort(500, f"Server error: {str(e)}")

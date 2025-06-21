@@ -47,19 +47,30 @@ class InMemoryRepository:
     def update(self, obj_id, data):
         """
         Update an object in the repository
-
+        
         Args:
             obj_id: ID of the object to update
-            data: Dictionary of attributes to update
+        data: Dictionary of attributes to update
 
         Returns:
             Updated object if found, None otherwise
         """
         obj = self.get(obj_id)
-        if obj and hasattr(obj, 'update'):
-            obj.update(data)
-            return obj
-        return None
+        if not obj:
+            return None
+        
+        try:
+            if hasattr(obj, 'update'):
+                updated_obj = obj.update(data)
+                return updated_obj
+            else:
+                for key, value in data.items():
+                    if hasattr(obj, key):
+                        setattr(obj, key, value)
+                return obj
+        except Exception as e:
+            print(f"Error in repository update: {str(e)}")
+            raise
 
     def delete(self, obj_id):
         """
