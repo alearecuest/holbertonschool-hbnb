@@ -92,6 +92,12 @@ class UserResource(Resource):
         
         try:
             updated_user = facade.update_user(user_id, data)
+            
+            if not updated_user:
+                updated_user = facade.get_user(user_id)
+                if not updated_user:
+                    api.abort(404, f"Failed to update user with ID {user_id}")
+            
             return updated_user.to_dict()
         except ValueError as e:
             api.abort(400, str(e))
