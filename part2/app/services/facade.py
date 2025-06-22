@@ -7,6 +7,7 @@ from app.models.user import User
 from app.models.amenity import Amenity
 from app.models.place import Place
 from app.models.review import Review
+from app.utils.validators import validate_user, validate_place, validate_review, validate_amenity
 
 
 class HBnBFacade:
@@ -19,6 +20,7 @@ class HBnBFacade:
         self.place_repo = InMemoryRepository()
         self.review_repo = InMemoryRepository()
 
+    @validate_user
     def create_user(self, user_data):
         """
         Create a new user
@@ -64,6 +66,9 @@ class HBnBFacade:
         Returns:
             User: The updated user or None
         """
+        if 'email' in data and not data['email']:
+            raise ValueError("Email cannot be empty")
+            
         return self.user_repo.update(user_id, data)
 
     def get_user_by_email(self, email):
@@ -78,6 +83,7 @@ class HBnBFacade:
         """
         return self.user_repo.get_by_attribute('email', email)
 
+    @validate_amenity
     def create_amenity(self, data):
         """
         Create a new amenity
@@ -126,8 +132,12 @@ class HBnBFacade:
         Returns:
             Amenity: The updated amenity or None
         """
+        if 'name' in data and not data['name']:
+            raise ValueError("Amenity name cannot be empty")
+            
         return self.amenity_repo.update(amenity_id, data)
 
+    @validate_place
     def create_place(self, place_data):
         """
         Create a new place
@@ -265,6 +275,30 @@ class HBnBFacade:
         if not place:
             return None
         
+        if 'latitude' in place_data:
+            try:
+                latitude = float(place_data['latitude'])
+                if latitude < -90 or latitude > 90:
+                    raise ValueError("Latitude must be between -90 and 90")
+            except (ValueError, TypeError):
+                raise ValueError("Latitude must be a valid number")
+        
+        if 'longitude' in place_data:
+            try:
+                longitude = float(place_data['longitude'])
+                if longitude < -180 or longitude > 180:
+                    raise ValueError("Longitude must be between -180 and 180")
+            except (ValueError, TypeError):
+                raise ValueError("Longitude must be a valid number")
+        
+        if 'price' in place_data:
+            try:
+                price = float(place_data['price'])
+                if price <= 0:
+                    raise ValueError("Price must be a positive number")
+            except (ValueError, TypeError):
+                raise ValueError("Price must be a valid number")
+        
         if 'owner_id' in place_data:
             owner = self.get_user(place_data['owner_id'])
             if not owner:
@@ -289,6 +323,7 @@ class HBnBFacade:
         
         return self.place_repo.update(place_id, place_data)
 
+    @validate_review
     def create_review(self, review_data):
         """
         Create a new review
@@ -316,7 +351,7 @@ class HBnBFacade:
             if rating < 1 or rating > 5:
                 raise ValueError("Rating must be between 1 and 5")
         except (ValueError, TypeError):
-            raise ValueError("Rating must be an integer between 1 and 5")
+            raise ValueError("Rating must be a valid integer between 1 and 5")
         
         user = self.get_user(review_data['user_id'])
         if not user:
@@ -369,10 +404,12 @@ class HBnBFacade:
             list: List of reviews for the place
             None: If place not found
         """
+        # Get place
         place = self.place_repo.get(place_id)
         if not place:
             return None
         
+        # Return reviews
         return place.get_reviews()
 
     def update_review(self, review_id, review_data):
@@ -390,10 +427,16 @@ class HBnBFacade:
         Raises:
             ValueError: If review data is invalid
         """
+        # Get review
         review = self.review_repo.get(review_id)
         if not review:
             return None
         
+        # Validate manually
+        if 'text' in review_data and not review_data['text']:
+            raise ValueError("Review text cannot be empty")
+            
+        # Validate rating if provided
         if 'rating' in review_data:
             try:
                 rating = int(review_data['rating'])
