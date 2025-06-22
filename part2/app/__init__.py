@@ -19,12 +19,13 @@ def create_app():
         return jsonify({
             "name": "HBnB API",
             "version": "1.0",
-            "author": "alearecuest",
-            "last_updated": "2025-06-21 03:38:59",
+            "author": "HolbertonG4MVD",
+            "last_updated": "2025-06-22 14:01:03",
             "documentation": "/api/v1",
             "endpoints": {
                 "users": "/api/v1/users",
-                "amenities": "/api/v1/amenities"
+                "amenities": "/api/v1/amenities",
+                "places": "/api/v1/places"
             }
         })
     
@@ -40,8 +41,10 @@ def create_app():
     
     from app.api.v1.users import api as users_ns
     from app.api.v1.amenities import api as amenities_ns
+    from app.api.v1.places import api as places_ns
     
     api.add_namespace(users_ns, path='/users')
     api.add_namespace(amenities_ns, path='/amenities')
+    api.add_namespace(places_ns, path='/places')
     
     return app
