@@ -7,9 +7,6 @@ from app import create_app
 app = create_app()
 
 if __name__ == '__main__':
-    print("\n=== HBnB Application ===")
-    print("Author: alearecuest")
-    print("Last updated: 2025-06-21 03:30:44")
     
     print("\nStarting server on http://localhost:5000/")
     print("API documentation available at http://localhost:5000/api/v1/")

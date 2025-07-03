@@ -8,13 +8,13 @@ from app.services import facade
 
 api = Namespace('users', description='User operations')
 
-user_model = api.model('User', {
+user_model = api.model('User', {    
     'first_name': fields.String(required=True, description='First name of the user'),
     'last_name': fields.String(required=True, description='Last name of the user'),
     'email': fields.String(required=True, description='Email of the user'),
-    'Password': fields.String(required=True, description='password for user')
+    'password': fields.String(required=True, description='password for user'),
     'is_admin': fields.Boolean(description='Admin status of the user')
-})g
+})
 
 user_response_model = api.model('UserResponse', {
     'id': fields.String(description='User ID'),
