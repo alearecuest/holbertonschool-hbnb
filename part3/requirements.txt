@@ -3,3 +3,4 @@ flask-restx==0.5.1
 Werkzeug==2.0.1
 requests==2.27.1
 flask-bcrypt
+flask-jwt-extended

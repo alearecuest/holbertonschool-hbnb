@@ -3,9 +3,11 @@
 Initialize Flask application and register API
 """
 from flask import Flask, redirect, jsonify
-from config import Config
 from flask_bcrypt import Bcrypt
+from flask_jwt_extended import JWTManager
+from datetime import timedelta
 
+jwt = JWTManager()
 bcrypt = Bcrypt() 
 
 def create_app(config_class="config.DevelopmentConfig"):
@@ -14,6 +16,12 @@ def create_app(config_class="config.DevelopmentConfig"):
     app = Flask(__name__)
     app.config.from_object(config_class)
     bcrypt.init_app(app)
+    jwt.init_app(app)
+
+    app.config["JWT_SECRET_KEY"] = "tu_clave_secreta_super_segura"  # Cámbiala por algo seguro
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+
+    jwt = JWTManager(app)
     
 
     @app.route('/')
