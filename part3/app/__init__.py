@@ -18,7 +18,7 @@ def create_app(config_class="config.DevelopmentConfig"):
     bcrypt.init_app(app)
     jwt.init_app(app)
 
-    app.config["JWT_SECRET_KEY"] = "tu_clave_secreta_super_segura"  # Cámbiala por algo seguro
+    app.config["JWT_SECRET_KEY"] = "12qwerty34"
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 
     jwt = JWTManager(app)
