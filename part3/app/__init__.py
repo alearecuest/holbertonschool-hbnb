@@ -21,9 +21,6 @@ def create_app(config_class="config.DevelopmentConfig"):
     app.config["JWT_SECRET_KEY"] = "12qwerty34"
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 
-    jwt = JWTManager(app)
-    
-
     @app.route('/')
     def index():
         """Redireccionar a la documentación API"""
