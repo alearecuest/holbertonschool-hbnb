@@ -3,8 +3,10 @@
 Place API endpoints
 """
 from flask import request
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
+from app.api.v1.models import place_model
 
 api = Namespace('places', description='Place operations')
 
@@ -67,10 +69,14 @@ class PlaceList(Resource):
     @api.response(201, 'Place successfully created', place_response_model)
     @api.response(400, 'Invalid input data')
     @api.response(404, 'Owner or amenity not found')
+    @api.response(401, 'Authentication required')
+    @api.required()
     def post(self):
         """Register a new place"""
         place_data = request.json
-        
+        current_user_id = get_jwt_identity() 
+        place_data['owner_id'] = current_user_id
+
         try:
             new_place = facade.create_place(place_data)
             
@@ -105,11 +111,19 @@ class PlaceResource(Resource):
     @api.response(200, 'Place updated successfully', place_response_model)
     @api.response(404, 'Place not found')
     @api.response(400, 'Invalid input data')
+    @api.response(401, 'Authentication required')
+    @api.response(403, 'Unauthorized action')
+    @jwt_required()
     def put(self, place_id):
         """Update a place's information"""
+        current_user_id = get_jwt_identity() 
         place = facade.get_place(place_id)
+
         if not place:
             api.abort(404, f"Place with ID {place_id} not found")
+
+        if place['owner']['id'] != current_user_id:
+            api.abort(403, f"Unauthorize action")
         
         data = request.json
         

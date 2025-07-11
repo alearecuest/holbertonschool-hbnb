@@ -15,8 +15,8 @@ def create_app(config_class="config.DevelopmentConfig"):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
-    app.config["JWT_SECRET_KEY"] = "tu_clave_secreta_super_segura"
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)    
+    app.config["JWT_SECRET_KEY"] = "pepito_proteje_tu_clave"
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)  
 
     bcrypt.init_app(app)
     jwt.init_app(app)

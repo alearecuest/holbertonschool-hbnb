@@ -5,6 +5,7 @@ User API endpoints
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 api = Namespace('users', description='User operations')
 
@@ -78,8 +79,19 @@ class UserResource(Resource):
     @api.response(404, 'User not found')
     @api.response(400, 'Invalid input data')
     @api.marshal_with(user_response_model)
+    @api.response(401, 'Authentication required')
+    @api.response(403, 'Unauthorized action')
+    @jwt_required()
     def put(self, user_id):
         """Update a user's information"""
+        current_user = get_jwt_identity() 
+        
+        if current_user != user_id:
+            api.abort(403, "Unauthorized action")
+        
+
+        if 'email' in data or 'password' in data:
+            api.abort(400, "You cannot modify email or password through this endpoint")
         user = facade.get_user(user_id)
         if not user:
             api.abort(404, f"User with ID {user_id} not found")
