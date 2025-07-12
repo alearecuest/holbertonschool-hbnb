@@ -3,6 +3,7 @@
 Amenity API endpoints for the HBnB project
 """
 from flask import request
+from flask_jwt_extended import jwt_required, get_jwt #Para la task 3 necesitábamos esta importación
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
 
@@ -29,8 +30,14 @@ class AmenityList(Resource):
     @api.response(201, 'Amenity successfully created', amenity_response_model)
     @api.response(400, 'Invalid input data')
     @api.marshal_with(amenity_response_model, code=201)
+    @jwt_required() #Decorador necesario para la task 3
     def post(self):
         """Register a new amenity"""
+        # Verificamos si el usuario es admin en esta parte
+        claims = get_jwt()
+        if not claims.get('is_admin', False):
+            api.abort(403, "Admin privileges required")
+    
         amenity_data = request.json
         
         try:
@@ -43,11 +50,11 @@ class AmenityList(Resource):
     @api.doc('list_amenities')
     @api.response(200, 'List of amenities retrieved successfully', [amenity_response_model])
     @api.marshal_list_with(amenity_response_model)
+    @jwt_required()
     def get(self):
         """Retrieve a list of all amenities"""
         amenities = facade.get_all_amenities()
         return [amenity.to_dict() for amenity in amenities]
-
 
 @api.route('/<string:amenity_id>')
 @api.param('amenity_id', 'The amenity identifier')
@@ -70,8 +77,14 @@ class AmenityResource(Resource):
     @api.response(400, 'Invalid input data')
     @api.response(500, 'Server error')
     @api.marshal_with(amenity_response_model)
+    @jwt_required()  # Añadí esta línea para la task3
     def put(self, amenity_id):
         """Update an amenity's information"""
+        # Con esto verificamos si el usuario es administr para la task3
+        claims = get_jwt()
+        if not claims.get('is_admin', False):
+            api.abort(403, "Admin privileges required")
+        
         amenity = facade.get_amenity(amenity_id)
         if not amenity:
             api.abort(404, f"Amenity with ID {amenity_id} not found")
@@ -88,3 +101,22 @@ class AmenityResource(Resource):
         except Exception as e:
             print(f"Unexpected error updating amenity: {str(e)}")
             api.abort(500, f"Server error: {str(e)}")
+
+    @api.doc('delete_amenity')
+    @api.response(204, 'Amenity deleted successfully')
+    @api.response(404, 'Amenity not found')
+    @api.response(401, 'Authentication required')
+    @api.response(403, 'Admin privileges required')
+    @jwt_required()
+    def delete(self, amenity_id):
+        """Delete an amenity (admin only)"""
+        claims = get_jwt()
+        if not claims.get('is_admin', False):
+            api.abort(403, "Admin privileges required")
+            
+        amenity = facade.get_amenity(amenity_id)
+        if not amenity:
+            api.abort(404, f"Amenity with ID {amenity_id} not found")
+            
+        facade.delete_amenity(amenity_id)
+        return '', 204

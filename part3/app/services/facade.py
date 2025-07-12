@@ -143,6 +143,22 @@ class HBnBFacade:
             raise ValueError("Amenity name cannot be empty")
             
         return self.amenity_repo.update(amenity_id, data)
+    
+    def delete_amenity(self, amenity_id): #Para borrar un amenity en la task3
+        """
+        Delete an amenity
+        
+        Args:
+            amenity_id (str): ID of the amenity
+        
+        Returns:
+            bool: True if deleted, False if not found
+        """
+        amenity = self.amenity_repo.get(amenity_id)
+        if not amenity:
+            return False
+    
+        return self.amenity_repo.delete(amenity_id)
 
     @validate_place
     def create_place(self, place_data):
@@ -188,8 +204,9 @@ class HBnBFacade:
         if 'amenities' in place_data and place_data['amenities']:
             for amenity_id in place_data['amenities']:
                 amenity = self.get_amenity(amenity_id)
-                if amenity:
-                    place.add_amenity(amenity)
+                if not amenity:
+                    raise ValueError(f"Amenity with ID {amenity_id} not found")
+                place.add_amenity(amenity)
         
         return self.place_repo.add(place)
 
@@ -411,12 +428,10 @@ class HBnBFacade:
             list: List of reviews for the place
             None: If place not found
         """
-        # Get place
         place = self.place_repo.get(place_id)
         if not place:
             return None
         
-        # Return reviews
         return place.get_reviews()
 
     def update_review(self, review_id, review_data):
@@ -434,16 +449,13 @@ class HBnBFacade:
         Raises:
             ValueError: If review data is invalid
         """
-        # Get review
         review = self.review_repo.get(review_id)
         if not review:
             return None
         
-        # Validate manually
         if 'text' in review_data and not review_data['text']:
             raise ValueError("Review text cannot be empty")
             
-        # Validate rating if provided
         if 'rating' in review_data:
             try:
                 rating = int(review_data['rating'])
@@ -453,7 +465,6 @@ class HBnBFacade:
             except (ValueError, TypeError):
                 raise ValueError("Rating must be an integer between 1 and 5")
         
-        # Update review
         return self.review_repo.update(review_id, review_data)
 
     def delete_review(self, review_id):
@@ -466,17 +477,14 @@ class HBnBFacade:
         Returns:
             bool: True if deleted, False if not found
         """
-        # Get review
         review = self.review_repo.get(review_id)
         if not review:
             return False
         
-        # Remove review from place
         place = review.place
         if place and hasattr(place, 'reviews'):
             place.reviews = [r for r in place.reviews if r.id != review_id]
         
-        # Delete review
         return self.review_repo.delete(review_id)
 
 
@@ -521,56 +529,49 @@ def get_all_amenities():
     """Get all amenities"""
     return _facade.get_all_amenities()
 
-
 def update_amenity(amenity_id, data):
     """Update an amenity"""
     return _facade.update_amenity(amenity_id, data)
 
+def delete_amenity(amenity_id): #Y esta gente es la función delete necesaria
+    """Delete an amenity"""
+    return _facade.delete_amenity(amenity_id)
 
 def create_place(place_data):
     """Create a new place"""
     return _facade.create_place(place_data)
 
-
 def get_place(place_id):
     """Get a place by ID"""
     return _facade.get_place(place_id)
-
 
 def get_all_places():
     """Get all places"""
     return _facade.get_all_places()
 
-
 def update_place(place_id, data):
     """Update a place"""
     return _facade.update_place(place_id, data)
-
 
 def create_review(review_data):
     """Create a new review"""
     return _facade.create_review(review_data)
 
-
 def get_review(review_id):
     """Get a review by ID"""
     return _facade.get_review(review_id)
-
 
 def get_all_reviews():
     """Get all reviews"""
     return _facade.get_all_reviews()
 
-
 def get_reviews_by_place(place_id):
     """Get all reviews for a specific place"""
     return _facade.get_reviews_by_place(place_id)
 
-
 def update_review(review_id, data):
     """Update a review"""
     return _facade.update_review(review_id, data)
-
 
 def delete_review(review_id):
     """Delete a review"""
