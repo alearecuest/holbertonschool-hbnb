@@ -5,6 +5,7 @@ User model for the HBnB project
 import re
 from app.models.base_model import BaseModel
 from app import bcrypt
+from flask_bcrypt import generate_password_hash, check_password_hash
 
 
 class User(BaseModel):

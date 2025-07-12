@@ -2,6 +2,6 @@
 """
 Services package for the HBnB project
 """
-from app.services.facade import HBnBFacade
+from .facade import HBnBFacade
 
 facade = HBnBFacade()
