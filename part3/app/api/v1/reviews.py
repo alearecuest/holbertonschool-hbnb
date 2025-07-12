@@ -5,7 +5,7 @@ Review API endpoints
 from flask import request
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 api = Namespace('reviews', description='Review operations')
 
@@ -48,7 +48,6 @@ review_list_model = api.model('ReviewListItem', {
     'text': fields.String(description='Text of the review'),
     'rating': fields.Integer(description='Rating of the place (1-5)')
 })
-
 
 @api.route('/')
 class ReviewList(Resource):
@@ -116,7 +115,6 @@ class ReviewList(Resource):
             })
         return result
 
-
 @api.route('/<string:review_id>')
 @api.param('review_id', 'The review identifier')
 class ReviewResource(Resource):
@@ -157,11 +155,14 @@ class ReviewResource(Resource):
         """Update a review's information"""
         review = facade.get_review(review_id)
         current_user = get_jwt_identity()
+        claims = get_jwt()
+        is_admin = claims.get('is_admin', False)
         
-        if review.user.id != current_user:
-           api.abort(403, "Unauthorized action")
         if not review:
             api.abort(404, f"Review with ID {review_id} not found")
+
+        if not is_admin and review.user.id != current_user:
+            api.abort(403, "Unauthorized action")
         
         data = request.json
         
@@ -198,21 +199,22 @@ class ReviewResource(Resource):
     @jwt_required()
     def delete(self, review_id):
         """Delete a review"""
-        current_user = get_jwt_identity()  
+        current_user = get_jwt_identity()
+        claims = get_jwt()
+        is_admin = claims.get('is_admin', False)
+
         review = facade.get_review(review_id)
         if not review:
            api.abort(404, f"Review with ID {review_id} not found")
         
-
-        if review.user.id != current_user:
-           api.abort(403, "Unauthorized action")
+        if not is_admin and review.user.id != current_user:
+            api.abort(403, "Unauthorized action")
         
         success = facade.delete_review(review_id)
         if not success:
             api.abort(404, f"Review with ID {review_id} not found")
         
         return {"message": "Review deleted successfully"}
-
 
 @api.route('/places/<string:place_id>/reviews')
 @api.param('place_id', 'The place identifier')

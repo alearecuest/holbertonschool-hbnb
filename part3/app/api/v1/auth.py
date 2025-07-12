@@ -14,7 +14,8 @@ register_model = api.model('Register', {
     'email': fields.String(required=True, description='User email'),
     'password': fields.String(required=True, description='User password'),
     'first_name': fields.String(required=True, description='User first name'),
-    'last_name': fields.String(required=True, description='User last name')
+    'last_name': fields.String(required=True, description='User last name'),
+    'is_admin': fields.Boolean(description='Is admin user', required=False)
 })
 
 @api.route('/register')
@@ -25,6 +26,7 @@ class Register(Resource):
     def post(self):
         """Register a new user"""
         user_data = api.payload
+        user_data['is_admin'] = user_data.get('is_admin', False)
         
         # Verificamos si el email ya existe
         existing_user = facade.get_user_by_email(user_data['email'])

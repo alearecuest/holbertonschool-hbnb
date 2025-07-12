@@ -3,9 +3,10 @@
 Place API endpoints
 """
 from flask import request
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
+
 
 api = Namespace('places', description='Place operations')
 
@@ -131,8 +132,11 @@ class PlaceResource(Resource):
         if not place:
             api.abort(404, f"Place with ID {place_id} not found")
 
-        if place['owner']['id'] != current_user: #Esta linea tambien la modifique
-            api.abort(403, f"Unauthorize action")
+        claims = get_jwt()
+        is_admin = claims.get('is_admin', False)
+
+        if not is_admin and place['owner']['id'] != current_user:
+            api.abort(403, "Unauthorized action")
         
         data = request.json
         

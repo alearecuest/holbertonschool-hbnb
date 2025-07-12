@@ -21,8 +21,6 @@ amenity_response_model = api.model('AmenityResponse', {
     'created_at': fields.String(description='Creation timestamp'),
     'updated_at': fields.String(description='Update timestamp')
 })
-
-
 @api.route('/')
 class AmenityList(Resource):
     @api.doc('create_amenity')
@@ -41,7 +39,6 @@ class AmenityList(Resource):
         amenity_data = request.json
         
         try:
-            # Create new amenity
             new_amenity = facade.create_amenity(amenity_data)
             return new_amenity.to_dict(), 201
         except ValueError as e:
