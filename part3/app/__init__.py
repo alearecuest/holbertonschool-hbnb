@@ -3,7 +3,7 @@
 Initialize Flask application and register API
 """
 from flask import Flask, redirect, jsonify
-from app.extensiones import bcrypt, jwt
+from app.extensiones import bcrypt, jwt, db
 from flask_restx import Api
 from datetime import timedelta
 from app.api.v1.auth import api as auth_ns
@@ -11,18 +11,15 @@ from app.api.v1.protected import api as protected_ns
 
 def create_app(config_class="config.DevelopmentConfig"):
     """Create and configure the Flask application"""
-    
     app = Flask(__name__)
     app.config.from_object(config_class)
 
-    app.config["JWT_SECRET_KEY"] = "pepito_proteje_tu_clave"
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)  
+    app.config["JWT_SECRET_KEY"] = ""
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 
     bcrypt.init_app(app)
     jwt.init_app(app)
-
-    app.config["JWT_SECRET_KEY"] = "12qwerty34"
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+    db.init_app(app) #Agreagamos para la task5
 
     api = Api(
         app,

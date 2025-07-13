@@ -7,7 +7,6 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
 
-
 api = Namespace('places', description='Place operations')
 
 amenity_model = api.model('PlaceAmenity', {

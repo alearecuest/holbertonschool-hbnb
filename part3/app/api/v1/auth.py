@@ -64,10 +64,5 @@ class Login(Resource):
             identity=str(user.id),
             additional_claims={"is_admin": user.is_admin}
         )
-       # token = create_access_token(identity={
-        #    'id': str(user.id),
-         #   'is_admin': user.is_admin
-        #})
-
         return {'access_token': token}, 200
 #Gurises después de leer lo que agregue borren los comentarios porfa

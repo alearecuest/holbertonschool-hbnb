@@ -2,6 +2,7 @@
 """
 Facade service for the HBnB application
 """
+from app.repositories.sqlalchemy_repository import SQLAlchemyRepository # Nueva módulo para la task5
 from app.repositories.in_memory_repository import InMemoryRepository
 from app.models.user import User
 from app.models.amenity import Amenity
@@ -9,16 +10,16 @@ from app.models.place import Place
 from app.models.review import Review
 from app.utils.validators import validate_user, validate_place, validate_review, validate_amenity
 
-
 class HBnBFacade:
     """Facade for handling business logic operations"""
 
     def __init__(self):
         """Initialize repositories for different entities"""
-        self.user_repo = InMemoryRepository()
-        self.amenity_repo = InMemoryRepository()
-        self.place_repo = InMemoryRepository()
-        self.review_repo = InMemoryRepository()
+        # Se cambia para usar DataBase SQL en task5
+        self.user_repo = SQLAlchemyRepository(User)
+        self.amenity_repo = SQLAlchemyRepository(Amenity)
+        self.place_repo = SQLAlchemyRepository(Place)
+        self.review_repo = SQLAlchemyRepository(Review)
 
     @validate_user
     def create_user(self, user_data):
@@ -211,16 +212,7 @@ class HBnBFacade:
         return self.place_repo.add(place)
 
     def get_place(self, place_id):
-        """
-        Get a place by ID, including associated owner, amenities and reviews
-        
-        Args:
-            place_id (str): ID of the place
-            
-        Returns:
-            dict: Place data with owner, amenities, and reviews information
-            None: If place not found
-        """
+
         place = self.place_repo.get(place_id)
         if not place:
             return None
@@ -281,20 +273,7 @@ class HBnBFacade:
         return result
 
     def update_place(self, place_id, place_data):
-        """
-        Update a place
-        
-        Args:
-            place_id (str): ID of the place to update
-            place_data (dict): New data for the place
-            
-        Returns:
-            Place: Updated place
-            None: If place not found
-            
-        Raises:
-            ValueError: If place data is invalid
-        """
+
         place = self.place_repo.get(place_id)
         if not place:
             return None
@@ -349,22 +328,7 @@ class HBnBFacade:
 
     @validate_review
     def create_review(self, review_data):
-        """
-        Create a new review
-        
-        Args:
-            review_data (dict): Data for the new review, including:
-                - text: Text of the review
-                - rating: Rating of the place (1-5)
-                - user_id: ID of the user who created the review
-                - place_id: ID of the place being reviewed
-        
-        Returns:
-            Review: The created review
-            
-        Raises:
-            ValueError: If review data is invalid or user/place not found
-        """
+
         required_fields = ['text', 'rating', 'user_id', 'place_id']
         for field in required_fields:
             if field not in review_data:
@@ -397,37 +361,15 @@ class HBnBFacade:
         return self.review_repo.add(review)
 
     def get_review(self, review_id):
-        """
-        Get a review by ID
-        
-        Args:
-            review_id (str): ID of the review
-            
-        Returns:
-            Review: The found review or None
-        """
+
         return self.review_repo.get(review_id)
 
     def get_all_reviews(self):
-        """
-        Get all reviews
-        
-        Returns:
-            list: List of all reviews
-        """
+
         return self.review_repo.get_all()
 
     def get_reviews_by_place(self, place_id):
-        """
-        Get all reviews for a specific place
-        
-        Args:
-            place_id (str): ID of the place
-            
-        Returns:
-            list: List of reviews for the place
-            None: If place not found
-        """
+
         place = self.place_repo.get(place_id)
         if not place:
             return None
@@ -435,20 +377,7 @@ class HBnBFacade:
         return place.get_reviews()
 
     def update_review(self, review_id, review_data):
-        """
-        Update a review
-        
-        Args:
-            review_id (str): ID of the review
-            review_data (dict): New data for the review
-            
-        Returns:
-            Review: Updated review
-            None: If review not found
-            
-        Raises:
-            ValueError: If review data is invalid
-        """
+
         review = self.review_repo.get(review_id)
         if not review:
             return None
@@ -468,15 +397,7 @@ class HBnBFacade:
         return self.review_repo.update(review_id, review_data)
 
     def delete_review(self, review_id):
-        """
-        Delete a review
-        
-        Args:
-            review_id (str): ID of the review
-            
-        Returns:
-            bool: True if deleted, False if not found
-        """
+
         review = self.review_repo.get(review_id)
         if not review:
             return False
@@ -487,43 +408,35 @@ class HBnBFacade:
         
         return self.review_repo.delete(review_id)
 
-
 _facade = HBnBFacade()
 
 def create_user(user_data):
     """Create a new user"""
     return _facade.create_user(user_data)
 
-
 def get_user(user_id):
     """Get a user by ID"""
     return _facade.get_user(user_id)
-
 
 def get_all_users():
     """Get all users"""
     return _facade.get_all_users()
 
-
 def update_user(user_id, data):
     """Update a user"""
     return _facade.update_user(user_id, data)
-
 
 def get_user_by_email(email):
     """Get a user by email"""
     return _facade.get_user_by_email(email)
 
-
 def create_amenity(data):
     """Create a new amenity"""
     return _facade.create_amenity(data)
 
-
 def get_amenity(amenity_id):
     """Get an amenity by ID"""
     return _facade.get_amenity(amenity_id)
-
 
 def get_all_amenities():
     """Get all amenities"""

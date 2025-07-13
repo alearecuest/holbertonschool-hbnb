@@ -4,7 +4,6 @@ Repository module for the HBnB project
 """
 from abc import ABC, abstractmethod
 
-
 class Repository(ABC):
     """Abstract base class for repositories"""
     
@@ -37,7 +36,6 @@ class Repository(ABC):
     def get_by_attribute(self, attr_name, attr_value):
         """Get an object by attribute"""
         pass
-
 
 class InMemoryRepository(Repository):
     """In-memory repository implementation"""

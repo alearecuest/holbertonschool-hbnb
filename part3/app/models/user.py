@@ -5,8 +5,8 @@ User model for the HBnB project
 import re
 from app.models.base_model import BaseModel
 from app import bcrypt
-from flask_bcrypt import generate_password_hash, check_password_hash
-
+#from flask_bcrypt import generate_password_hash, check_password_hash # Vemos que no es necesario una doble importación del 
+# mismo.
 
 class User(BaseModel):
     """User class for representing users in the HBnB application"""
@@ -18,7 +18,6 @@ class User(BaseModel):
     def verify_password(self, password):
         """Verifies if the provided password matches the hashed password."""
         return bcrypt.check_password_hash(self.password, password)
-
 
     def __init__(self, first_name, last_name, email, is_admin=False, **kwargs):
         """
