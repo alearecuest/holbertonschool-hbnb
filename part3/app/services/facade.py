@@ -3,7 +3,11 @@
 Facade service for the HBnB application
 """
 from app.repositories.sqlalchemy_repository import SQLAlchemyRepository
-from app.repositories.user_repository import UserRepository  # Importamos UserRepository
+from app.repositories.user_repository import UserRepository
+from app.repositories.place_repository import PlaceRepository
+from app.repositories.review_repository import ReviewRepository
+from app.repositories.amenity_repository import AmenityRepository
+
 from app.models.user import User
 from app.models.amenity import Amenity
 from app.models.place import Place
@@ -15,15 +19,10 @@ class HBnBFacade:
 
     def __init__(self):
         """Initialize repositories for different entities"""
-        # Usamos UserRepository para User
         self.user_repo = UserRepository()
-        # Para el resto seguimos usando SQLAlchemyRepository genérico
-        self.amenity_repo = SQLAlchemyRepository(Amenity)
-        self.place_repo = SQLAlchemyRepository(Place)
-        self.review_repo = SQLAlchemyRepository(Review)
-        self.amenity_repo = SQLAlchemyRepository(Amenity)
-        self.place_repo = SQLAlchemyRepository(Place)
-        self.review_repo = SQLAlchemyRepository(Review)
+        self.amenity_repo = AmenityRepository()
+        self.place_repo = PlaceRepository()
+        self.review_repo = ReviewRepository()
 
     @validate_user
     def create_user(self, user_data):

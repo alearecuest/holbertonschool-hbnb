@@ -3,11 +3,15 @@
 Amenity model for the HBnB project
 """
 from app.models.base_model import BaseModel
+from app.extensiones import db
 from datetime import datetime
-
 
 class Amenity(BaseModel):
     """Amenity class for storing amenity information"""
+    __tablename__ = 'amenities'
+    
+    name = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.Text, nullable=True)
 
     def __init__(self, **kwargs):
         """Initialize a new Amenity instance"""

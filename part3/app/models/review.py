@@ -3,11 +3,16 @@
 Review model for the HBnB project
 """
 from app.models.base_model import BaseModel
+from app.extensiones import db
 
 
 class Review(BaseModel):
     """Review class for representing reviews in the HBnB application"""
-
+    __tablename__ = 'reviews'
+    
+    text = db.Column(db.Text, nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    
     def __init__(self, text, rating, place, user, **kwargs):
         """
         Initialize a new Review instance
