@@ -5,6 +5,7 @@ Place model for the HBnB project
 from app.models.base_model import BaseModel
 from app.extensiones import db
 from app.models.user import User
+from app.models.associations import place_amenity
 
 class Place(BaseModel):
     """Place class for representing rental properties in the HBnB application"""
@@ -16,6 +17,17 @@ class Place(BaseModel):
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
     
+    # Foreign key para la relación con User
+    owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+    
+    # Relaciones con otras entidades
+    reviews = db.relationship('Review', backref='place', lazy=True, 
+                           cascade="all, delete-orphan")
+    
+    # Relación many-to-many con Amenity
+    amenities = db.relationship('Amenity', secondary=place_amenity, 
+                             lazy='subquery', backref=db.backref('places', lazy=True))
+
     def __init__(self, title, description, price, latitude, longitude, owner, **kwargs):
         """
         Initialize a new Place instance
@@ -35,9 +47,7 @@ class Place(BaseModel):
         self.price = price
         self.latitude = latitude
         self.longitude = longitude
-        self.owner = owner
-        self.reviews = []
-        self.amenities = []
+        self.owner = owner  # SQLAlchemy manejará el owner_id automáticamente
         self.validate()
 
     def validate(self):
@@ -80,7 +90,8 @@ class Place(BaseModel):
         Args:
             review: The review to add
         """
-        self.reviews.append(review)
+        if review not in self.reviews:
+            self.reviews.append(review)
 
     def add_amenity(self, amenity):
         """

@@ -5,13 +5,15 @@ Review model for the HBnB project
 from app.models.base_model import BaseModel
 from app.extensiones import db
 
-
 class Review(BaseModel):
     """Review class for representing reviews in the HBnB application"""
     __tablename__ = 'reviews'
     
     text = db.Column(db.Text, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
+    
+    place_id = db.Column(db.String(36), db.ForeignKey('places.id'), nullable=False)
+    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
     
     def __init__(self, text, rating, place, user, **kwargs):
         """
@@ -27,11 +29,12 @@ class Review(BaseModel):
         super().__init__(**kwargs)
         self.text = text
         self.rating = rating
-        self.place = place
-        self.user = user
+        self.place = place  # SQLAlchemy manejará el place_id automáticamente
+        self.user = user    # SQLAlchemy manejará el user_id automáticamente
         self.validate()
         
-        self.place.add_review(self)
+        if hasattr(self.place, 'add_review'):
+            self.place.add_review(self)
 
     def validate(self):
         """

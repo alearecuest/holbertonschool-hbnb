@@ -23,3 +23,27 @@ class ReviewRepository(SQLAlchemyRepository):
             list: List of reviews with rating >= min_rating
         """
         return Review.query.filter(Review.rating >= min_rating).all()
+        
+    def get_reviews_by_place(self, place_id):
+        """
+        Get reviews for a place
+        
+        Args:
+            place_id (str): Place ID
+            
+        Returns:
+            list: List of reviews for the place
+        """
+        return Review.query.filter_by(place_id=place_id).all()
+        
+    def get_reviews_by_user(self, user_id):
+        """
+        Get reviews written by a user
+        
+        Args:
+            user_id (str): User ID
+            
+        Returns:
+            list: List of reviews written by the user
+        """
+        return Review.query.filter_by(user_id=user_id).all()

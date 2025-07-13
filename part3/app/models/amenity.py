@@ -10,9 +10,9 @@ class Amenity(BaseModel):
     """Amenity class for storing amenity information"""
     __tablename__ = 'amenities'
     
-    name = db.Column(db.String(50), nullable=False)
+    name = db.Column(db.String(50), nullable=False, unique=True)
     description = db.Column(db.Text, nullable=True)
-
+    
     def __init__(self, **kwargs):
         """Initialize a new Amenity instance"""
         super().__init__(**kwargs)

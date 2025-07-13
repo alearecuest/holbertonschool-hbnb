@@ -11,6 +11,7 @@ class SQLAlchemyRepository:
     def __init__(self, model):
         """Initialize with model class"""
         self.model = model
+        self.session = db.session
     
     def add(self, obj):
         """Add object to database"""

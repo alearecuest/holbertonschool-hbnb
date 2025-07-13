@@ -27,3 +27,33 @@ class PlaceRepository(SQLAlchemyRepository):
             Place.price >= min_price,
             Place.price <= max_price
         ).all()
+    
+    def get_places_by_owner(self, owner_id):
+        """
+        Get places owned by a user
+        
+        Args:
+            owner_id (str): User ID
+            
+        Returns:
+            list: List of places owned by the user
+        """
+        return Place.query.filter_by(owner_id=owner_id).all()
+    
+    def add_amenity_to_place(self, place_id, amenity):
+        """
+        Add an amenity to a place
+        
+        Args:
+            place_id (str): Place ID
+            amenity: Amenity to add
+            
+        Returns:
+            Place: Updated place if successful, None otherwise
+        """
+        place = self.get(place_id)
+        if place and amenity not in place.amenities:
+            place.amenities.append(amenity)
+            self.session.commit()
+            return place
+        return None

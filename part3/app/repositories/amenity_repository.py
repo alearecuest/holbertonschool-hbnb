@@ -23,3 +23,30 @@ class AmenityRepository(SQLAlchemyRepository):
             Amenity: Amenity object if found, None otherwise
         """
         return Amenity.query.filter_by(name=name).first()
+    
+    def name_exists(self, name):
+        """
+        Check if amenity name exists
+        
+        Args:
+            name (str): Amenity name
+            
+        Returns:
+            bool: True if exists, False otherwise
+        """
+        return Amenity.query.filter_by(name=name).count() > 0
+        
+    def get_amenity_places(self, amenity_id):
+        """
+        Get places with this amenity
+        
+        Args:
+            amenity_id (str): Amenity ID
+            
+        Returns:
+            list: List of places with this amenity
+        """
+        amenity = self.get(amenity_id)
+        if amenity:
+            return amenity.places
+        return []

@@ -35,3 +35,33 @@ class UserRepository(SQLAlchemyRepository):
             bool: True if exists, False otherwise
         """
         return User.query.filter_by(email=email).count() > 0
+        
+    def get_user_places(self, user_id):
+        """
+        Get places owned by a user
+        
+        Args:
+            user_id (str): User ID
+            
+        Returns:
+            list: List of places owned by the user
+        """
+        user = self.get(user_id)
+        if user:
+            return user.places
+        return []
+        
+    def get_user_reviews(self, user_id):
+        """
+        Get reviews written by a user
+        
+        Args:
+            user_id (str): User ID
+            
+        Returns:
+            list: List of reviews written by the user
+        """
+        user = self.get(user_id)
+        if user:
+            return user.reviews
+        return []
