@@ -2,8 +2,8 @@
 """
 Facade service for the HBnB application
 """
-from app.repositories.sqlalchemy_repository import SQLAlchemyRepository # Nueva módulo para la task5
-from app.repositories.in_memory_repository import InMemoryRepository
+from app.repositories.sqlalchemy_repository import SQLAlchemyRepository
+from app.repositories.user_repository import UserRepository  # Importamos UserRepository
 from app.models.user import User
 from app.models.amenity import Amenity
 from app.models.place import Place
@@ -15,8 +15,12 @@ class HBnBFacade:
 
     def __init__(self):
         """Initialize repositories for different entities"""
-        # Se cambia para usar DataBase SQL en task5
-        self.user_repo = SQLAlchemyRepository(User)
+        # Usamos UserRepository para User
+        self.user_repo = UserRepository()
+        # Para el resto seguimos usando SQLAlchemyRepository genérico
+        self.amenity_repo = SQLAlchemyRepository(Amenity)
+        self.place_repo = SQLAlchemyRepository(Place)
+        self.review_repo = SQLAlchemyRepository(Review)
         self.amenity_repo = SQLAlchemyRepository(Amenity)
         self.place_repo = SQLAlchemyRepository(Place)
         self.review_repo = SQLAlchemyRepository(Review)

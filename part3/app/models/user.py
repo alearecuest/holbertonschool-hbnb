@@ -4,12 +4,18 @@ User model for the HBnB project
 """
 import re
 from app.models.base_model import BaseModel
-from app import bcrypt
-#from flask_bcrypt import generate_password_hash, check_password_hash # Vemos que no es necesario una doble importación del 
-# mismo.
+from app.extensiones import db, bcrypt
 
 class User(BaseModel):
     """User class for representing users in the HBnB application"""
+    __tablename__ = 'users'  # Nombre de la tabla en la base de datos
+    
+    # Columnas de la tabla
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(120), nullable=False, unique=True)
+    password = db.Column(db.String(128), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
 
     def hash_password(self, password):
         """Hashes the password before storing it."""
@@ -63,4 +69,3 @@ class User(BaseModel):
 
         if not isinstance(self.is_admin, bool):
             raise ValueError("is_admin must be a boolean")
-    

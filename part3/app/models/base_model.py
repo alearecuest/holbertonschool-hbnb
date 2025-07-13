@@ -4,10 +4,15 @@ Base model for the HBnB project
 """
 import uuid
 from datetime import datetime
+from app.extensiones import db
 
-
-class BaseModel:
+class BaseModel(db.Model):
     """Base class for all models in the HBnB application"""
+    __abstract__ = True  # Para que no cree una tabla para esta clase
+    
+    id = db.Column(db.String(36), primary_key=True)
+    created_at = db.Column(db.DateTime)
+    updated_at = db.Column(db.DateTime)
 
     def __init__(self, id=None, created_at=None, updated_at=None, **kwargs):
         """
@@ -38,6 +43,8 @@ class BaseModel:
     def save(self):
         """Update the updated_at timestamp when the object is modified"""
         self.updated_at = datetime.utcnow()
+        db.session.add(self)
+        db.session.commit()
 
     def update(self, data):
         """
@@ -58,7 +65,12 @@ class BaseModel:
         Returns:
             dict: Dictionary representation of the instance
         """
-        result = self.__dict__.copy()
+        # No podemos usar _dict_ directamente por SQLAlchemy
+        result = {}
+        for key, value in self.__dict__.items():
+            if not key.startswith('_'):
+                result[key] = value
+                
         result['created_at'] = self.created_at.isoformat()
         result['updated_at'] = self.updated_at.isoformat()
         return result
