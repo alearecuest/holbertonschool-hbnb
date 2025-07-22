@@ -3,7 +3,7 @@
 Place model for the HBnB project
 """
 from app.models.base_model import BaseModel
-from app.extensiones import db
+from app.extensions import db
 from app.models.user import User
 from app.models.associations import place_amenity
 

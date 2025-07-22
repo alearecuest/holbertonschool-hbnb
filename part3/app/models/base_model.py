@@ -4,7 +4,7 @@ Base model for the HBnB project
 """
 import uuid
 from datetime import datetime
-from app.extensiones import db
+from app.extensions import db
 
 class BaseModel(db.Model):
     """Base class for all models in the HBnB application"""

@@ -2,7 +2,7 @@
 """
 SQLAlchemy repository for database operations
 """
-from app.extensiones import db
+from app.extensions import db
 from datetime import datetime
 
 class SQLAlchemyRepository:

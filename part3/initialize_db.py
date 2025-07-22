@@ -3,7 +3,7 @@
 Script para inicializar la base de datos
 """
 from app import create_app
-from app.extensiones import db
+from app.extensions import db
 
 # Crear la aplicación
 app = create_app()

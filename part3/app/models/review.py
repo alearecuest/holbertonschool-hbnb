@@ -3,7 +3,7 @@
 Review model for the HBnB project
 """
 from app.models.base_model import BaseModel
-from app.extensiones import db
+from app.extensions import db
 
 
 class Review(BaseModel):

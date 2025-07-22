@@ -2,7 +2,7 @@
 """
 Tablas de asociación para relaciones many-to-many
 """
-from app.extensiones import db
+from app.extensions import db
 
 # Tabla de asociación para la relación many-to-many entre Place y Amenity
 place_amenity = db.Table('place_amenity',

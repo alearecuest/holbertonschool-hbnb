@@ -4,7 +4,7 @@ User model for the HBnB project
 """
 from datetime import datetime
 from app.models.base_model import BaseModel
-from app.extensiones import db, bcrypt
+from app.extensions import db, bcrypt
 
 
 class User(BaseModel):

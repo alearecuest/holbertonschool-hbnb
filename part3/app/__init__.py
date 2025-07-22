@@ -3,7 +3,7 @@
 Initialize Flask application and register API
 """
 from flask import Flask, redirect, jsonify
-from app.extensiones import bcrypt, jwt, db
+from app.extensions import bcrypt, jwt, db
 from flask_restx import Api
 from datetime import timedelta
 from app.api.v1.auth import api as auth_ns
