@@ -131,6 +131,45 @@ class HBnBFacade:
             return None
         return [r.to_dict() for r in place.get_reviews()]
 
+    # Amenities ↔ Places association
+    def get_amenities_by_place(self, place_id):
+        place = self.place_repo.get(place_id)
+        if not place:
+            return None
+        return [
+            {
+                'id': amenity.id,
+                'name': amenity.name
+            }
+            for amenity in place.amenities
+        ]
+
+    def add_amenity_to_place(self, place_id, amenity_id):
+        place   = self.place_repo.get(place_id)
+        if not place:
+            return None
+        amenity = self.amenity_repo.get(amenity_id)
+        if not amenity:
+            return None
+        place.add_amenity(amenity)
+        db.session.commit()
+        return {'id': amenity.id, 'name': amenity.name}
+
+    def remove_amenity_from_place(self, place_id, amenity_id):
+        """
+        Desvincula un amenity de un place.
+        """
+        place = self.place_repo.get(place_id)
+        if not place:
+            return False
+        amenity = self.amenity_repo.get(amenity_id)
+        if not amenity:
+            return False
+        if amenity in place.amenities:
+            place.amenities.remove(amenity)
+        db.session.commit()
+        return True
+
     def update_review(self, review_id, data):
         rev = self.review_repo.update(review_id, data)
         return rev.to_dict() if rev else None
@@ -140,6 +179,7 @@ class HBnBFacade:
 
 _facade = HBnBFacade()
 
+# Users
 def create_user(user_data):
     return _facade.create_user(user_data)
 
@@ -155,6 +195,7 @@ def update_user(user_id, data):
 def get_user_by_email(email):
     return _facade.get_user_by_email(email)
 
+# Amenities
 def create_amenity(data):
     return _facade.create_amenity(data)
 
@@ -170,6 +211,7 @@ def update_amenity(amenity_id, data):
 def delete_amenity(amenity_id):
     return _facade.delete_amenity(amenity_id)
 
+# Places
 def create_place(place_data):
     return _facade.create_place(place_data)
 
@@ -185,6 +227,7 @@ def update_place(place_id, data):
 def delete_place(place_id):
     return _facade.delete_place(place_id)
 
+# Reviews
 def get_review(review_id):
     return _facade.get_review(review_id)
 
@@ -199,3 +242,13 @@ def update_review(review_id, data):
 
 def delete_review(review_id):
     return _facade.delete_review(review_id)
+
+# Amenities ↔ Places association
+def get_amenities_by_place(place_id):
+    return _facade.get_amenities_by_place(place_id)
+
+def add_amenity_to_place(place_id, amenity_id):
+    return _facade.add_amenity_to_place(place_id, amenity_id)
+
+def remove_amenity_from_place(place_id, amenity_id):
+    return _facade.remove_amenity_from_place(place_id, amenity_id)

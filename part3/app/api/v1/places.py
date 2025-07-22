@@ -157,18 +157,9 @@ class PlaceResource(Resource):
 @api.route('/<string:place_id>/reviews')
 @api.param('place_id', 'The place identifier')
 class PlaceReviewList(Resource):
-    @api.doc('list_amenities_for_place')
-    @api.response(200, 'List of amenities retrieved', [amenity_model])
-    @api.response(404, 'Place not found')
-    def get(self, place_id):
-        """List all amenities linked to a place"""
-        place = facade.get_place(place_id)
-        if not place:
-            api.abort(404, f"Place with ID {place_id} not found")
-        return facade.get_amenities_by_place(place_id), 200
-
     @api.doc('list_reviews_for_place')
-    @api.response(200, 'List of reviews retrieved successfully', [review_model])
+    @api.response(200, 'List of reviews retrieved', [review_model])
+    @api.response(404, 'Place not found')
     def get(self, place_id):
         """List all reviews for a specific place"""
         place = facade.get_place(place_id)
@@ -192,9 +183,49 @@ class PlaceReviewList(Resource):
         data = request.json or {}
         data['place_id'] = place_id
         data['user_id']  = get_jwt_identity()
-
         try:
             new_rev = facade.create_review(data)
             return facade.get_review(new_rev.id), 201
         except ValueError as e:
             api.abort(400, str(e))
+
+@api.route('/<string:place_id>/amenities/')
+@api.param('place_id', 'The place identifier')
+class PlaceAmenityList(Resource):
+    @api.doc('list_amenities_for_place')
+    @api.response(200, 'List of amenities retrieved', [amenity_model])
+    @api.response(404, 'Place not found')
+    def get(self, place_id):
+        """List all amenities linked to a place"""
+        place = facade.get_place(place_id)
+        if not place:
+            api.abort(404, f"Place with ID {place_id} not found")
+        return facade.get_amenities_by_place(place_id), 200
+
+@api.route('/<string:place_id>/amenities/<string:amenity_id>')
+@api.param('place_id', 'The place identifier')
+@api.param('amenity_id', 'The amenity identifier')
+class PlaceAmenity(Resource):
+    @api.doc('link_amenity_to_place')
+    @api.response(201, 'Amenity linked to place', amenity_model)
+    @api.response(404, 'Place or amenity not found')
+    @api.response(401, 'Authentication required')
+    @jwt_required()
+    def post(self, place_id, amenity_id):
+        """Link an amenity to a place"""
+        linked = facade.add_amenity_to_place(place_id, amenity_id)
+        if not linked:
+            api.abort(404, "Place or amenity not found")
+        return linked, 201
+
+    @api.doc('unlink_amenity_from_place')
+    @api.response(204, 'Amenity unlinked successfully')
+    @api.response(404, 'Place or amenity not found')
+    @api.response(401, 'Authentication required')
+    @jwt_required()
+    def delete(self, place_id, amenity_id):
+        """Unlink an amenity from a place"""
+        success = facade.remove_amenity_from_place(place_id, amenity_id)
+        if not success:
+            api.abort(404, "Place or amenity not found")
+        return '', 204
