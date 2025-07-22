@@ -3,7 +3,7 @@
 Amenity API endpoints for the HBnB project
 """
 from flask import request
-from flask_jwt_extended import jwt_required, get_jwt #Para la task 3 necesitábamos esta importación
+from flask_jwt_extended import jwt_required, get_jwt
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
 
@@ -11,7 +11,7 @@ api = Namespace('amenities', description='Amenity operations')
 
 amenity_model = api.model('Amenity', {
     'name': fields.String(required=True, description='Name of the amenity'),
-    'description': fields.String(description='Description of the amenity')
+    'description': fields.String(description='Description of the amenity'),
 })
 
 amenity_response_model = api.model('AmenityResponse', {
@@ -19,39 +19,40 @@ amenity_response_model = api.model('AmenityResponse', {
     'name': fields.String(description='Name of the amenity'),
     'description': fields.String(description='Description of the amenity'),
     'created_at': fields.String(description='Creation timestamp'),
-    'updated_at': fields.String(description='Update timestamp')
+    'updated_at': fields.String(description='Update timestamp'),
 })
+
 @api.route('/')
 class AmenityList(Resource):
+    @api.doc('list_amenities')
+    @api.response(200, 'List of amenities retrieved successfully', [amenity_response_model])
+    @api.marshal_list_with(amenity_response_model)
+    def get(self):
+        """Retrieve a list of all amenities (public)"""
+        amenities = facade.get_all_amenities()
+        return [amenity.to_dict() for amenity in amenities]
+
     @api.doc('create_amenity')
     @api.expect(amenity_model)
     @api.response(201, 'Amenity successfully created', amenity_response_model)
     @api.response(400, 'Invalid input data')
     @api.marshal_with(amenity_response_model, code=201)
-    @jwt_required() #Decorador necesario para la task 3
+    @jwt_required()
     def post(self):
-        """Register a new amenity"""
-        # Verificamos si el usuario es admin en esta parte
+        """Register a new amenity (admin only)"""
         claims = get_jwt()
         if not claims.get('is_admin', False):
             api.abort(403, "Admin privileges required")
-    
-        amenity_data = request.json
-        
+
+        data = request.get_json() or {}
+        if 'name' not in data or not data['name']:
+            api.abort(400, "Missing name")
+
         try:
-            new_amenity = facade.create_amenity(amenity_data)
-            return new_amenity.to_dict(), 201
+            new = facade.create_amenity(data)
+            return new.to_dict(), 201
         except ValueError as e:
             api.abort(400, str(e))
-
-    @api.doc('list_amenities')
-    @api.response(200, 'List of amenities retrieved successfully', [amenity_response_model])
-    @api.marshal_list_with(amenity_response_model)
-    @jwt_required()
-    def get(self):
-        """Retrieve a list of all amenities"""
-        amenities = facade.get_all_amenities()
-        return [amenity.to_dict() for amenity in amenities]
 
 @api.route('/<string:amenity_id>')
 @api.param('amenity_id', 'The amenity identifier')
@@ -61,43 +62,36 @@ class AmenityResource(Resource):
     @api.response(404, 'Amenity not found')
     @api.marshal_with(amenity_response_model)
     def get(self, amenity_id):
-        """Get amenity details by ID"""
+        """Get amenity details by ID (public)"""
         amenity = facade.get_amenity(amenity_id)
         if not amenity:
-            api.abort(404, f"Amenity with ID {amenity_id} not found")
+            api.abort(404, "Amenity not found")
         return amenity.to_dict()
 
     @api.doc('update_amenity')
     @api.expect(amenity_model)
     @api.response(200, 'Amenity updated successfully', amenity_response_model)
-    @api.response(404, 'Amenity not found')
     @api.response(400, 'Invalid input data')
-    @api.response(500, 'Server error')
+    @api.response(404, 'Amenity not found')
     @api.marshal_with(amenity_response_model)
-    @jwt_required()  # Añadí esta línea para la task3
+    @jwt_required()
     def put(self, amenity_id):
-        """Update an amenity's information"""
-        # Con esto verificamos si el usuario es administr para la task3
+        """Update an existing amenity (admin only)"""
         claims = get_jwt()
         if not claims.get('is_admin', False):
             api.abort(403, "Admin privileges required")
-        
-        amenity = facade.get_amenity(amenity_id)
-        if not amenity:
-            api.abort(404, f"Amenity with ID {amenity_id} not found")
-        
-        data = request.json
-        
+
+        data = request.get_json() or {}
+        if 'name' in data and not data['name']:
+            api.abort(400, "Amenity name cannot be empty")
+
         try:
-            updated_amenity = facade.update_amenity(amenity_id, data)
-            if not updated_amenity:
-                api.abort(404, f"Failed to update amenity with ID {amenity_id}")
-            return updated_amenity.to_dict()
+            updated = facade.update_amenity(amenity_id, data)
+            if not updated:
+                api.abort(404, "Amenity not found")
+            return updated.to_dict()
         except ValueError as e:
             api.abort(400, str(e))
-        except Exception as e:
-            print(f"Unexpected error updating amenity: {str(e)}")
-            api.abort(500, f"Server error: {str(e)}")
 
     @api.doc('delete_amenity')
     @api.response(204, 'Amenity deleted successfully')
@@ -110,10 +104,8 @@ class AmenityResource(Resource):
         claims = get_jwt()
         if not claims.get('is_admin', False):
             api.abort(403, "Admin privileges required")
-            
-        amenity = facade.get_amenity(amenity_id)
-        if not amenity:
-            api.abort(404, f"Amenity with ID {amenity_id} not found")
-            
-        facade.delete_amenity(amenity_id)
+
+        success = facade.delete_amenity(amenity_id)
+        if not success:
+            api.abort(404, "Amenity not found")
         return '', 204

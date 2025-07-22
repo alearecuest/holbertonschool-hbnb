@@ -13,7 +13,7 @@ user_model = api.model('User', {
     'first_name': fields.String(required=True, description='First name of the user'),
     'last_name': fields.String(required=True, description='Last name of the user'),
     'email': fields.String(required=True, description='Email of the user'),
-    'password': fields.String(required=True, description='password for user'),
+    'password': fields.String(required=True, description='Password for user'),
     'is_admin': fields.Boolean(description='Admin status of the user')
 })
 
@@ -35,16 +35,11 @@ class UserList(Resource):
     @api.response(400, 'Email already registered')
     @api.response(400, 'Invalid input data')
     @api.marshal_with(user_response_model, code=201)
-    @jwt_required()
     def post(self):
-        """Register a new user""" #Modifique estas lineas
-        claims = get_jwt()
-        if not claims.get('is_admin', False):
-            api.abort(403, "Admin privileges required to create users.")
+        """Register a new user (public)"""
+        user_data = request.get_json() or {}
 
-        user_data = request.json
-
-        existing_user = facade.get_user_by_email(user_data['email'])
+        existing_user = facade.get_user_by_email(user_data.get('email'))
         if existing_user:
             api.abort(400, "Email already registered")
 
@@ -62,6 +57,7 @@ class UserList(Resource):
         users = facade.get_all_users()
         return [user.to_dict() for user in users]
 
+
 @api.route('/<string:user_id>')
 @api.param('user_id', 'The user identifier')
 class UserResource(Resource):
@@ -69,14 +65,14 @@ class UserResource(Resource):
     @api.response(200, 'User details retrieved successfully', user_response_model)
     @api.response(404, 'User not found')
     @api.marshal_with(user_response_model)
-    @jwt_required()  # <-- PROTEGE GET
+    @jwt_required()  # protect get user details
     def get(self, user_id):
         """Get user details by ID (admin or self only)"""
         claims = get_jwt()
         current_user = get_jwt_identity()
-        # Solo admin o el propio usuario pueden ver los datos
         if not (claims.get('is_admin', False) or current_user == user_id):
             api.abort(403, "Unauthorized action")
+
         user = facade.get_user(user_id)
         if not user:
             api.abort(404, f"User with ID {user_id} not found")
@@ -87,10 +83,10 @@ class UserResource(Resource):
     @api.response(200, 'User updated successfully', user_response_model)
     @api.response(404, 'User not found')
     @api.response(400, 'Invalid input data')
-    @api.marshal_with(user_response_model)
     @api.response(401, 'Authentication required')
     @api.response(403, 'Unauthorized action')
-    @jwt_required()  # <-- PROTEGE PUT
+    @api.marshal_with(user_response_model)
+    @jwt_required()
     def put(self, user_id):
         """Update a user's information (admin can update any user)"""
         claims = get_jwt()
@@ -98,9 +94,9 @@ class UserResource(Resource):
         user = facade.get_user(user_id)
         if not user:
             api.abort(404, f"User with ID {user_id} not found")
-        data = request.json
+        data = request.get_json() or {}
 
-        # Admin puede modificar cualquier campo, incluido email/password
+        # Admin can modify any field, including email/password
         if claims.get('is_admin', False):
             if 'email' in data and data['email'] != user.email:
                 existing_user = facade.get_user_by_email(data['email'])
@@ -114,7 +110,7 @@ class UserResource(Resource):
             except ValueError as e:
                 api.abort(400, str(e))
 
-        # Usuario normal: solo puede modificar a sí mismo, sin email ni password
+        # Normal user: only update self, cannot change email or password
         if current_user != user_id:
             api.abort(403, "Unauthorized action")
         if 'email' in data or 'password' in data:

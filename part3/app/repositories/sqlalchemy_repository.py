@@ -11,12 +11,14 @@ class SQLAlchemyRepository:
     def __init__(self, model):
         """Initialize with model class"""
         self.model = model
-        self.session = db.session
     
     def add(self, obj):
-        """Add object to database"""
+        """
+        Add object to database, commit, and refresh to populate auto-generated fields.
+        """
         db.session.add(obj)
         db.session.commit()
+        db.session.refresh(obj)
         return obj
     
     def get(self, obj_id):
@@ -28,7 +30,9 @@ class SQLAlchemyRepository:
         return self.model.query.all()
     
     def update(self, obj_id, data):
-        """Update object attributes"""
+        """
+        Update object attributes, commit, and refresh to reflect changes.
+        """
         obj = self.get(obj_id)
         if obj:
             for key, value in data.items():
@@ -36,6 +40,7 @@ class SQLAlchemyRepository:
                     setattr(obj, key, value)
             obj.updated_at = datetime.utcnow()
             db.session.commit()
+            db.session.refresh(obj)
             return obj
         return None
     
@@ -49,6 +54,6 @@ class SQLAlchemyRepository:
         return False
         
     def get_by_attribute(self, attr_name, attr_value):
-        """Get object by attribute value"""
+        """Get object by arbitrary attribute value"""
         filter_kwargs = {attr_name: attr_value}
         return self.model.query.filter_by(**filter_kwargs).first()

@@ -1,0 +1,159 @@
+
+Starting server on http://localhost:5000/
+API documentation available at http://localhost:5000/api/v1/
+Basic API info available at http://localhost:5000/info
+
+Available routes:
+  /static/<path:filename>
+  /api/v1/swagger.json
+  /api/v1
+  /api/v1
+  /swaggerui/<path:filename>
+  /
+  /info
+  /api/v1/auth/register
+  /api/v1/auth/login/
+  /api/v1/protected/
+  /api/v1/users/
+  /api/v1/users/<string:user_id>
+  /api/v1/amenities/
+  /api/v1/amenities/<string:amenity_id>
+  /api/v1/places/
+  /api/v1/places/<string:place_id>
+  /api/v1/places/<string:place_id>/reviews
+  /api/v1/reviews/
+  /api/v1/reviews/<string:review_id>
+  /api/v1/reviews/places/<string:place_id>/reviews
+
+Starting server...
+ * Serving Flask app 'app'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.29.187.45:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 320-277-816
+/home/aleare/dev/holbertonschool-hbnb/part3/app/models/place.py:96: SAWarning: Object of type <Review> not in session, add operation along 'Place.reviews' will not proceed (This warning originated from the Session 'autoflush' process, which was invoked automatically in response to a user-initiated operation.)
+  if review not in self.reviews:
+127.0.0.1 - - [21/Jul/2025 20:01:08] "[35m[1mPOST /api/v1/places/df16095c-188c-4c44-be82-87380b26f527/reviews HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1965, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 921, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.IntegrityError: NOT NULL constraint failed: reviews.user_id
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/flask/app.py", line 2213, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/flask/app.py", line 2193, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/flask_restx/api.py", line 673, in error_router
+    return original_handler(f)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/flask_restx/api.py", line 671, in error_router
+    return self.handle_error(e)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/flask_restx/api.py", line 673, in error_router
+    return original_handler(f)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/flask_restx/api.py", line 671, in error_router
+    return self.handle_error(e)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/flask_restx/api.py", line 404, in wrapper
+    resp = resource(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/flask/views.py", line 109, in view
+    return current_app.ensure_sync(self.dispatch_request)(**kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/flask_restx/resource.py", line 46, in dispatch_request
+    resp = meth(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/flask_jwt_extended/view_decorators.py", line 170, in decorator
+    return current_app.ensure_sync(fn)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/app/api/v1/places.py", line 190, in post
+    new_rev = facade.create_review(data)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/app/services/facade.py", line 221, in create_review
+    return self.review_repo.add(rev)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/app/repositories/sqlalchemy_repository.py", line 20, in add
+    db.session.commit()
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/orm/scoping.py", line 554, in commit
+    return self._proxied.commit()
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1923, in commit
+    trans.commit(_to_root=True)
+  File "<string>", line 2, in commit
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1239, in commit
+    self._prepare_impl()
+  File "<string>", line 2, in _prepare_impl
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1214, in _prepare_impl
+    self.session.flush()
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4179, in flush
+    self._flush(objects)
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4314, in _flush
+    with util.safe_reraise():
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 147, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4275, in _flush
+    flush_context.execute()
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py", line 466, in execute
+    rec.execute(self)
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py", line 1043, in _emit_insert_statements
+    result = connection.execute(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1412, in execute
+    return meth(
+           ^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 515, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1635, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1844, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1984, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2339, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1965, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/aleare/dev/holbertonschool-hbnb/part3/aleareHolberton/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 921, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: reviews.user_id
+[SQL: INSERT INTO reviews (text, rating, place_id, user_id, id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('Genial lugar', 5, 'df16095c-188c-4c44-be82-87380b26f527', None, '8defcad5-a52f-4329-bf00-cef7ee8bf239', '2025-07-21 23:01:08.499979', '2025-07-21 23:01:08.499979')]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
