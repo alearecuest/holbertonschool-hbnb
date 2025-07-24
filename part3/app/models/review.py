@@ -5,9 +5,7 @@ Review model for the HBnB project
 from app.models.base_model import BaseModel
 from app.extensions import db
 
-
 class Review(BaseModel):
-    """Review class for representing reviews in the HBnB application"""
     __tablename__ = 'reviews'
 
     text     = db.Column(db.Text,    nullable=False)
@@ -16,7 +14,6 @@ class Review(BaseModel):
     place_id = db.Column(db.String(36), db.ForeignKey('places.id'), nullable=False)
     user_id  = db.Column(db.String(36), db.ForeignKey('users.id'),  nullable=False)
 
-    # Relaciones bidireccionales sin duplicar backref
     place = db.relationship(
         'Place',
         back_populates='reviews',

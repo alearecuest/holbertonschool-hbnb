@@ -16,7 +16,6 @@ class User(BaseModel):
     _password  = db.Column('password', db.String(128), nullable=False)
     is_admin   = db.Column(db.Boolean(), default=False)
 
-    # Relación hacia reviews
     reviews = db.relationship(
         'Review',
         back_populates='user',

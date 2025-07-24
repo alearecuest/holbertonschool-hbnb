@@ -6,33 +6,22 @@ from app.extensions import db
 from datetime import datetime
 
 class SQLAlchemyRepository:
-    """Repository using SQLAlchemy for database operations"""
-    
     def __init__(self, model):
-        """Initialize with model class"""
         self.model = model
     
     def add(self, obj):
-        """
-        Add object to database, commit, and refresh to populate auto-generated fields.
-        """
         db.session.add(obj)
         db.session.commit()
         db.session.refresh(obj)
         return obj
     
     def get(self, obj_id):
-        """Get object by ID"""
         return self.model.query.get(obj_id)
     
     def get_all(self):
-        """Get all objects"""
         return self.model.query.all()
     
     def update(self, obj_id, data):
-        """
-        Update object attributes, commit, and refresh to reflect changes.
-        """
         obj = self.get(obj_id)
         if obj:
             for key, value in data.items():
@@ -45,7 +34,6 @@ class SQLAlchemyRepository:
         return None
     
     def delete(self, obj_id):
-        """Delete object by ID"""
         obj = self.get(obj_id)
         if obj:
             db.session.delete(obj)
@@ -54,6 +42,5 @@ class SQLAlchemyRepository:
         return False
         
     def get_by_attribute(self, attr_name, attr_value):
-        """Get object by arbitrary attribute value"""
         filter_kwargs = {attr_name: attr_value}
         return self.model.query.filter_by(**filter_kwargs).first()

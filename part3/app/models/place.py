@@ -7,15 +7,14 @@ from app.extensions import db
 from app.models.user import User
 from app.models.associations import place_amenity
 
-
 class Place(BaseModel):
     __tablename__ = 'places'
 
     title       = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text,        nullable=True)
-    price       = db.Column(db.Float,       nullable=False)
-    latitude    = db.Column(db.Float,       nullable=False)
-    longitude   = db.Column(db.Float,       nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    price       = db.Column(db.Float, nullable=False)
+    latitude    = db.Column(db.Float, nullable=False)
+    longitude   = db.Column(db.Float, nullable=False)
 
     owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
     owner    = db.relationship(
@@ -24,7 +23,6 @@ class Place(BaseModel):
         lazy=True
     )
 
-    # Relation to Review via back_populates
     reviews = db.relationship(
         'Review',
         back_populates='place',

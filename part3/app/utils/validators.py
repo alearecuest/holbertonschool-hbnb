@@ -7,7 +7,6 @@ from functools import wraps
 
 
 def email_is_valid(email):
-    """Check if email has a valid format"""
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     return bool(re.match(pattern, email))
 
@@ -33,7 +32,6 @@ def validate_user(func):
 
 
 def validate_place(func):
-    """Decorator to validate place data"""
     @wraps(func)
     def wrapper(self, place_data):
         if 'title' not in place_data or not place_data['title']:
@@ -66,9 +64,7 @@ def validate_place(func):
         return func(self, place_data)
     return wrapper
 
-
 def validate_review(func):
-    """Decorator to validate review data"""
     @wraps(func)
     def wrapper(self, review_data):
         if 'text' not in review_data or not review_data['text']:
@@ -85,9 +81,7 @@ def validate_review(func):
         return func(self, review_data)
     return wrapper
 
-
 def validate_amenity(func):
-    """Decorator to validate amenity data"""
     @wraps(func)
     def wrapper(self, amenity_data):
         if 'name' not in amenity_data or not amenity_data['name']:
