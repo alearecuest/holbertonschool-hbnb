@@ -1,7 +1,5 @@
 #!/usr/bin/python3
-"""
-Facade service for the HBnB application
-"""
+
 from app.repositories.user_repository import UserRepository
 from app.repositories.place_repository import PlaceRepository
 from app.repositories.review_repository import ReviewRepository
@@ -14,7 +12,6 @@ from app.models.review import Review
 from app.utils.validators import validate_user, validate_place, validate_amenity
 
 class HBnBFacade:
-    """Facade for handling business logic operations"""
 
     def __init__(self):
         self.user_repo = UserRepository()
@@ -22,14 +19,11 @@ class HBnBFacade:
         self.place_repo = PlaceRepository()
         self.review_repo = ReviewRepository()
 
-    # Users
     @validate_user
     def create_user(self, user_data):
-        password = user_data.pop('password', None)
-        if not password:
+        if 'password' not in user_data or not user_data['password']:
             raise ValueError("Password is required")
         user = User(**user_data)
-        user.hash_password(password)
         return self.user_repo.add(user)
 
     def get_user(self, user_id):
@@ -44,7 +38,6 @@ class HBnBFacade:
     def get_user_by_email(self, email):
         return self.user_repo.get_by_attribute('email', email)
 
-    # Amenities
     @validate_amenity
     def create_amenity(self, data):
         amenity = Amenity(**data)
@@ -62,7 +55,6 @@ class HBnBFacade:
     def delete_amenity(self, amenity_id):
         return self.amenity_repo.delete(amenity_id)
 
-    # Places
     @validate_place
     def create_place(self, place_data):
         owner = self.get_user(place_data['owner_id'])
@@ -100,7 +92,6 @@ class HBnBFacade:
     def delete_place(self, place_id):
         return self.place_repo.delete(place_id)
 
-    # Reviews
     def create_review(self, data):
         user  = self.user_repo.get(data['user_id'])
         if not user:
@@ -131,7 +122,6 @@ class HBnBFacade:
             return None
         return [r.to_dict() for r in place.get_reviews()]
 
-    # Amenities ↔ Places association
     def get_amenities_by_place(self, place_id):
         place = self.place_repo.get(place_id)
         if not place:
@@ -156,9 +146,6 @@ class HBnBFacade:
         return {'id': amenity.id, 'name': amenity.name}
 
     def remove_amenity_from_place(self, place_id, amenity_id):
-        """
-        Desvincula un amenity de un place.
-        """
         place = self.place_repo.get(place_id)
         if not place:
             return False
@@ -179,7 +166,6 @@ class HBnBFacade:
 
 _facade = HBnBFacade()
 
-# Users
 def create_user(user_data):
     return _facade.create_user(user_data)
 
@@ -195,7 +181,6 @@ def update_user(user_id, data):
 def get_user_by_email(email):
     return _facade.get_user_by_email(email)
 
-# Amenities
 def create_amenity(data):
     return _facade.create_amenity(data)
 
@@ -211,7 +196,6 @@ def update_amenity(amenity_id, data):
 def delete_amenity(amenity_id):
     return _facade.delete_amenity(amenity_id)
 
-# Places
 def create_place(place_data):
     return _facade.create_place(place_data)
 
@@ -227,7 +211,6 @@ def update_place(place_id, data):
 def delete_place(place_id):
     return _facade.delete_place(place_id)
 
-# Reviews
 def get_review(review_id):
     return _facade.get_review(review_id)
 
@@ -243,7 +226,6 @@ def update_review(review_id, data):
 def delete_review(review_id):
     return _facade.delete_review(review_id)
 
-# Amenities ↔ Places association
 def get_amenities_by_place(place_id):
     return _facade.get_amenities_by_place(place_id)
 
