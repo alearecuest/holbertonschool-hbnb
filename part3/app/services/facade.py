@@ -36,7 +36,7 @@ class HBnBFacade:
         return self.user_repo.update(user_id, data)
 
     def get_user_by_email(self, email):
-        return self.user_repo.get_by_attribute('email', email)
+        return self.user_repo.get_user_by_email(email)
 
     @validate_amenity
     def create_amenity(self, data):

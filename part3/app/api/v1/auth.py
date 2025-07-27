@@ -2,9 +2,16 @@
 """
 Authentication API endpoints
 """
+from flask import request
 from flask_restx import Namespace, Resource, fields
-from flask_jwt_extended import create_access_token, create_refresh_token
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+    jwt_required,
+    get_jwt_identity
+)
 from app.services.facade import _facade as facade
+from app.extensions import bcrypt
 
 api = Namespace('auth', description='Authentication operations')
 
@@ -23,26 +30,25 @@ register_model = api.model('Register', {
 
 @api.route('/register')
 class Register(Resource):
-    @api.expect(register_model)
+    @api.expect(register_model, validate=True)
     @api.response(201, 'User registered successfully')
-    @api.response(400, 'Email already exists or invalid data')
+    @api.response(409, 'Email already exists')
+    @api.response(400, 'Invalid data')
     def post(self):
         """Register a new user"""
-        user_data = api.payload or {}
+        user_data = request.get_json() or {}
         user_data['is_admin'] = user_data.get('is_admin', False)
 
-        # Check if email is already in use
-        if facade.get_user_by_email(user_data['email']):
-            api.abort(400, "Email already exists")
+        if facade.get_user_by_email(user_data.get('email')):
+            return {'msg': 'Email already registered'}, 409
 
         try:
             new_user = facade.create_user(user_data)
-            user_dict = new_user.to_dict()
-            user_dict.pop('password', None)
-            return user_dict, 201
+            result = new_user.to_dict()
+            result.pop('password', None)
+            return result, 201
         except Exception as e:
-            api.abort(400, str(e))
-
+            return {'msg': str(e)}, 400
 
 @api.route('/login')
 class Login(Resource):
@@ -52,24 +58,31 @@ class Login(Resource):
     @api.response(401, 'Invalid credentials')
     def post(self):
         """Authenticate a user and return tokens"""
-        creds = api.payload or {}
-        email    = creds.get('email')
+        creds = request.get_json() or {}
+        email = creds.get('email')
         password = creds.get('password')
 
         if not email or not password:
-            api.abort(400, "Email and password are required")
+            return {'msg': 'Email and password are required'}, 400
 
         user = facade.get_user_by_email(email)
-        if not user or not user.verify_password(password):
-            api.abort(401, "Invalid email or password")
+        if not user or not bcrypt.check_password_hash(user._password, password):
+            return {'msg': 'Invalid email or password'}, 401
 
-        access_token  = create_access_token(
+        access_token = create_access_token(
             identity=str(user.id),
             additional_claims={'is_admin': user.is_admin}
         )
         refresh_token = create_refresh_token(identity=str(user.id))
 
-        return {
-            'access_token':  access_token,
-            'refresh_token': refresh_token
-        }, 200
+        return {'access_token': access_token, 'refresh_token': refresh_token}, 200
+
+@api.route('/refresh')
+class TokenRefresh(Resource):
+    @api.response(200, 'Token refreshed successfully')
+    @api.response(401, 'Invalid or missing refresh token')
+    @jwt_required(refresh=True)
+    def post(self):
+        current_user = get_jwt_identity()
+        new_token = create_access_token(identity=current_user)
+        return {'access_token': new_token}, 200

@@ -41,7 +41,7 @@ class User(BaseModel):
         return bcrypt.check_password_hash(self._password, raw_password)
 
     def verify_password(self, raw_password):
-        return self.check_password(raw_password)
+        return bcrypt.check_password_hash(self._password, raw_password)
 
     def update(self, data):
         if 'first_name' in data:
