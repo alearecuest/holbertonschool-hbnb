@@ -1,0 +1,6 @@
+# Entorno virtual
+aleareHolbertonHBnB/
+
+# Caché de Python
+__pycache__/
+*.pyc
