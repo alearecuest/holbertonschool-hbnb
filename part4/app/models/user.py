@@ -1,59 +1,36 @@
 #!/usr/bin/python3
 """
-User model for the HBnB project
+User model for HBnB
 """
 from datetime import datetime
-from app.models.base_model import BaseModel
 from app.extensions import db, bcrypt
 
+class User(db.Model):
+    __tablename__ = "users"
 
-class User(BaseModel):
-    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    _password = db.Column("password", db.String(128), nullable=False)
+    first_name = db.Column(db.String(64), nullable=False)
+    last_name = db.Column(db.String(64), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    first_name = db.Column(db.String(128), nullable=False)
-    last_name  = db.Column(db.String(128), nullable=False)
-    email      = db.Column(db.String(128), unique=True, nullable=False)
-    _password  = db.Column('password', db.String(128), nullable=False)
-    is_admin   = db.Column(db.Boolean(), default=False)
+    def set_password(self, password: str) -> None:
+        """Hashea y almacena la contraseña."""
+        self._password = bcrypt.generate_password_hash(password).decode("utf-8")
 
-    reviews = db.relationship(
-        'Review',
-        back_populates='user',
-        lazy=True,
-        cascade="all, delete-orphan"
-    )
+    def check_password(self, password: str) -> bool:
+        """Verifica la contraseña contra el hash."""
+        return bcrypt.check_password_hash(self._password, password)
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.first_name = kwargs.get('first_name', '')
-        self.last_name  = kwargs.get('last_name', '')
-        self.email      = kwargs.get('email', '')
-        self.is_admin   = kwargs.get('is_admin', False)
-
-        raw_pw = kwargs.get('password')
-        if raw_pw:
-            self.hash_password(raw_pw)
-
-    def hash_password(self, raw_password):
-        self._password = bcrypt.generate_password_hash(raw_password).decode('utf-8')
-
-    def check_password(self, raw_password):
-        return bcrypt.check_password_hash(self._password, raw_password)
-
-    def verify_password(self, raw_password):
-        return bcrypt.check_password_hash(self._password, raw_password)
-
-    def update(self, data):
-        if 'first_name' in data:
-            self.first_name = data['first_name']
-        if 'last_name' in data:
-            self.last_name = data['last_name']
-        if 'email' in data:
-            self.email = data['email']
-        if 'password' in data:
-            self.hash_password(data['password'])
-        if 'is_admin' in data:
-            self.is_admin = data['is_admin']
-
-        self.updated_at = datetime.utcnow()
-        return self
+    def to_dict(self) -> dict:
+        """Serializa el usuario (omitiendo la contraseña)."""
+        return {
+            "id": self.id,
+            "email": self.email,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "is_admin": self.is_admin,
+            "created_at": self.created_at.isoformat()
+        }

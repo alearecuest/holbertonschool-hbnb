@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HBnB — Place Details</title>
+  <link rel="icon" href="{{ url_for('static', filename='images/icon.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <header>
+    <img src="{{ url_for('static', filename='images/logo.png') }}"
+         class="logo" alt="HBnB Logo">
+    <a href="{{ url_for('render_login') }}" class="login-button">Login</a>
+  </header>
+
+  <nav>
+    <a href="{{ url_for('render_index') }}">Home</a>
+    <a href="{{ url_for('render_login') }}">Login</a>
+  </nav>
+
+  <main>
+    <section class="place-details">
+      <div class="place-info">
+        <h1>Mountain Cabin</h1>
+        <p>Host: John Doe</p>
+        <p>Price: $150 per night</p>
+        <p>Description: A peaceful retreat with spectacular views.</p>
+        <p>Amenities: WiFi, Kitchen, Fireplace</p>
+      </div>
+
+      <div class="place-gallery">
+        <h2>Gallery</h2>
+        <img src="{{ url_for('static', filename='images/place1.jpg') }}"
+             alt="Place 1" class="gallery-img">
+        <img src="{{ url_for('static', filename='images/place2.jpg') }}"
+             alt="Place 2" class="gallery-img">
+      </div>
+
+      <div class="reviews">
+        <h2>Reviews</h2>
+        <div class="review-card">
+          <p><strong>User:</strong> Mary</p>
+          <p><strong>Rating:</strong> ★★★★☆</p>
+          <p>"Excellent place, very cozy."</p>
+        </div>
+      </div>
+
+      <button class="details-button"
+              onclick="location.href='{{ url_for('render_add_review') }}'">
+        Add Review
+      </button>
+    </section>
+  </main>
+
+  <footer>
+    © 2025 HBnB. All rights reserved.
+  </footer>
+</body>
+</html>

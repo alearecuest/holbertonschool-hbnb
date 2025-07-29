@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HBnB — Places List</title>
+  <link rel="icon" href="{{ url_for('static', filename='images/icon.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <header>
+    <img src="{{ url_for('static', filename='images/logo.png') }}"
+         class="logo" alt="HBnB Logo">
+    <a href="{{ url_for('render_login') }}" class="login-button">Login</a>
+  </header>
+
+  <nav>
+    <a href="{{ url_for('render_index') }}">Home</a>
+    <a href="{{ url_for('render_login') }}">Login</a>
+  </nav>
+
+  <main>
+    <h1>Our Places</h1>
+    <section class="places-list">
+      <div class="place-card">
+        <h2>Beach House</h2>
+        <p>Price: $120 per night</p>
+        <button class="details-button"
+                onclick="location.href='{{ url_for('render_place') }}'">
+          View Details
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2025 HBnB. All rights reserved.
+  </footer>
+</body>
+</html>

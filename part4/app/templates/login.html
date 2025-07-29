@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HBnB — Login</title>
+  <link rel="icon" href="{{ url_for('static', filename='images/icon.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <header>
+    <img src="{{ url_for('static', filename='images/logo.png') }}"
+         class="logo" alt="HBnB Logo">
+    <a href="{{ url_for('render_login') }}" class="login-button">Login</a>
+  </header>
+
+  <nav>
+    <a href="{{ url_for('render_index') }}">Home</a>
+    <a href="{{ url_for('render_login') }}">Login</a>
+  </nav>
+
+  <main>
+    <h1>Log In</h1>
+    <form id="login-form" method="POST" action="#">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required>
+
+      <button type="submit">Login</button>
+    </form>
+    <div id="login-error" class="error-msg"></div>
+  </main>
+
+  <footer>
+    © 2025 HBnB. All rights reserved.
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>

@@ -35,7 +35,6 @@ class Register(Resource):
     @api.response(409, 'Email already exists')
     @api.response(400, 'Invalid data')
     def post(self):
-        """Register a new user"""
         user_data = request.get_json() or {}
         user_data['is_admin'] = user_data.get('is_admin', False)
 
@@ -45,19 +44,17 @@ class Register(Resource):
         try:
             new_user = facade.create_user(user_data)
             result = new_user.to_dict()
-            result.pop('password', None)
             return result, 201
         except Exception as e:
             return {'msg': str(e)}, 400
 
 @api.route('/login')
 class Login(Resource):
-    @api.expect(login_model)
+    @api.expect(login_model, validate=True)
     @api.response(200, 'Login successful')
     @api.response(400, 'Validation error')
     @api.response(401, 'Invalid credentials')
     def post(self):
-        """Authenticate a user and return tokens"""
         creds = request.get_json() or {}
         email = creds.get('email')
         password = creds.get('password')
