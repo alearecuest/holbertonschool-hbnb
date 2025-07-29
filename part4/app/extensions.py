@@ -14,6 +14,11 @@ jwt    = JWTManager()
 def init_app(app):
     bcrypt.init_app(app)
     db.init_app(app)
+
+    from app.models.user import User
+    from app.models.review import Review
+    from app.models.place import Place
+
     jwt.init_app(app)
 
     @jwt.unauthorized_loader

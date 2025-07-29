@@ -4,7 +4,7 @@ User model for HBnB
 """
 from datetime import datetime
 from app.extensions import db, bcrypt
-
+from app.models.review import Review
 class User(db.Model):
     __tablename__ = "users"
 
@@ -15,6 +15,13 @@ class User(db.Model):
     last_name = db.Column(db.String(64), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    reviews = db.relationship(
+        "Review",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        lazy=True
+    )
 
     def set_password(self, password: str) -> None:
         """Hashea y almacena la contraseña."""
