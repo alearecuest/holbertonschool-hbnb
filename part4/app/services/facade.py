@@ -1,5 +1,7 @@
 #!/usr/bin/python3
-
+"""
+Facade for the HBnB project
+"""
 from app.repositories.user_repository import UserRepository
 from app.repositories.place_repository import PlaceRepository
 from app.repositories.review_repository import ReviewRepository
@@ -10,6 +12,7 @@ from app.models.amenity import Amenity
 from app.models.place import Place
 from app.models.review import Review
 from app.utils.validators import validate_user, validate_place, validate_amenity
+from app.extensions import bcrypt
 
 class HBnBFacade:
 
@@ -23,7 +26,11 @@ class HBnBFacade:
     def create_user(self, user_data):
         if 'password' not in user_data or not user_data['password']:
             raise ValueError("Password is required")
+
+        password = user_data.pop('password')
         user = User(**user_data)
+        user.set_password(password)
+
         return self.user_repo.add(user)
 
     def get_user(self, user_id):

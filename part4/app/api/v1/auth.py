@@ -2,7 +2,7 @@
 """
 Authentication API endpoints
 """
-from flask import request
+from flask import request, jsonify
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import (
     create_access_token,
@@ -10,7 +10,7 @@ from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity
 )
-from app.services.facade import _facade as facade
+from app.services.facade import get_user_by_email
 from app.extensions import bcrypt
 
 api = Namespace('auth', description='Authentication operations')
@@ -38,11 +38,12 @@ class Register(Resource):
         user_data = request.get_json() or {}
         user_data['is_admin'] = user_data.get('is_admin', False)
 
-        if facade.get_user_by_email(user_data.get('email')):
+        if get_user_by_email(user_data.get('email')):
             return {'msg': 'Email already registered'}, 409
 
         try:
-            new_user = facade.create_user(user_data)
+            from app.services.facade import create_user
+            new_user = create_user(user_data)
             result = new_user.to_dict()
             return result, 201
         except Exception as e:
@@ -62,7 +63,7 @@ class Login(Resource):
         if not email or not password:
             return {'msg': 'Email and password are required'}, 400
 
-        user = facade.get_user_by_email(email)
+        user = get_user_by_email(email)
         if not user or not bcrypt.check_password_hash(user._password, password):
             return {'msg': 'Invalid email or password'}, 401
 

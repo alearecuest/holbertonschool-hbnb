@@ -31,8 +31,12 @@ def create_app(config_class="config.DevelopmentConfig"):
 
     init_app(app)
 
+    with app.app_context():
+        from app.extensions import db
+        db.create_all()
+
     api = Api(
-        app,
+        app,    
         version='1.0',
         title='HBnB API',
         description='Holberton BnB API',
@@ -65,19 +69,19 @@ def create_app(config_class="config.DevelopmentConfig"):
         })
 
     @app.route('/', methods=['GET'])
-    def render_index():
+    def index():
         return render_template('index.html')
 
     @app.route('/login', methods=['GET'])
-    def render_login():
+    def login():
         return render_template('login.html')
 
     @app.route('/place', methods=['GET'])
-    def render_place():
+    def place():
         return render_template('place.html')
 
     @app.route('/add_review', methods=['GET'])
-    def render_add_review():
+    def add_review():
         return render_template('add_review.html')
 
     return app
