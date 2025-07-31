@@ -11,15 +11,14 @@
         <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
         <nav>
             <ul>
-                <li><a href="{{ url_for('index') }}">Home</a></li>
-                <li><a href="{{ url_for('login') }}" class="login-button">Login</a></li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/login" class="login-button">Login</a></li>
             </ul>
         </nav>
     </header>
     <main>
         <section class="login-form">
             <h2>Login</h2>
-            <!-- Formulario con ID para JavaScript -->
             <form id="login-form">
                 <div class="form-group">
                     <label for="email">Email:</label>
@@ -31,14 +30,12 @@
                 </div>
                 <button type="submit" class="submit-button">Login</button>
             </form>
-            <!-- Mensaje de error (oculto por defecto) -->
-            <div id="error-message" style="color: #ff2e88; margin-top: 15px; display: none; text-align: center;"></div>
+            <div id="error-message" style="color: #ff2e88; margin-top: 10px; display: none;"></div>
         </section>
     </main>
     <footer>
         <p>&copy; 2025 Holberton School. All rights reserved.</p>
     </footer>
-    <!-- Enlaza el JS -->
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
 </html>

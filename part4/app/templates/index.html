@@ -11,8 +11,8 @@
         <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
         <nav>
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="login.html" class="login-button">Login</a></li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/login" class="login-button">Login</a></li>
             </ul>
         </nav>
     </header>
@@ -21,55 +21,22 @@
         <h1 style="text-align: center; color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue);">Available Properties</h1>
         
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px;">
-            <!-- Salinas Cabin -->
-            <div class="place-card">
-                <h3>🌴 Cozy Cabin - Salinas</h3>
-                <p>⭐ 3 stars</p>
-                <p>2 bedrooms | Comfortable & Pleasant</p>
-                <div class="amenity-tags">
-                    <span class="amenity-tag">Near Beach</span>
-                    <span class="amenity-tag">Terrace</span>
-                    <span class="amenity-tag">BBQ</span>
-                    <span class="amenity-tag">Garden</span>
-                </div>
-                <p style="color: #aaa; margin-top: 15px;">Price per night: $180</p>
-                <button class="details-button">View Details</button>
-            </div>
+        </div>
 
-            <!-- Punta del Este Apartment -->
-            <div class="place-card">
-                <h3>🌊 Sea View Apartment - Punta del Este</h3>
-                <p>⭐ 4 stars</p>
-                <p>1 bedroom | Sea View</p>
-                <div class="amenity-tags">
-                    <span class="amenity-tag">Pool</span>
-                    <span class="amenity-tag">BBQ</span>
-                    <span class="amenity-tag">Gym</span>
-                    <span class="amenity-tag">Garage</span>
-                </div>
-                <p style="color: #aaa; margin-top: 15px;">Price per night: $250</p>
-                <button class="details-button">View Details</button>
-            </div>
-
-            <!-- La Paloma House -->
-            <div class="place-card">
-                <h3>🏡 Luxury House - La Paloma</h4>
-                <p>⭐ 5 stars</p>
-                <p>4 bedrooms | 2 bathrooms</p>
-                <div class="amenity-tags">
-                    <span class="amenity-tag">Living Room</span>
-                    <span class="amenity-tag">Pool</span>
-                    <span class="amenity-tag">Garage</span>
-                    <span class="amenity-tag">Sea View</span>
-                </div>
-                <p style="color: #aaa; margin-top: 15px;">Price per night: $350</p>
-                <button class="details-button">View Details</button>
-            </div>
+        <div style="margin: 20px 0; text-align: center;">
+            <label for="price-filter">Filtrar por precio máximo:</label>
+            <select id="price-filter">
+                <option value="All">All</option>
+                <option value="10">10</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
         </div>
     </main>
 
     <footer>
         <p>&copy; 2025 Holberton School. All rights reserved.</p>
     </footer>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
 </html>
