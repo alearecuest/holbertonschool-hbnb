@@ -18,6 +18,21 @@ function deleteCookie(name) {
   document.cookie = `${name}=; Max-Age=0; path=/;`;
 }
 
+// Función para decodificar el token JWT y obtener los datos
+function parseJwt(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  } catch(e) {
+    console.error('Error parsing JWT token', e);
+    return null;
+  }
+}
+
 function checkAuthentication() {
   const token = getCookie('token');
   const loginLink = document.getElementById('login-link');
@@ -186,6 +201,8 @@ async function fetchPlaceDetails(placeId) {
     const place = await res.json();
     displayPlaceDetails(place);
     
+    checkDeletePermission(place);
+    
     fetchReviews(placeId);
   } catch (err) {
     console.error(err);
@@ -224,6 +241,65 @@ function displayPlaceDetails(place) {
     });
   } else if (amenitiesList) {
     amenitiesList.innerHTML = '<p>No amenities listed</p>';
+  }
+}
+
+function checkDeletePermission(place) {
+  const token = getCookie('token');
+  if (!token) return;
+
+  const deleteContainer = document.getElementById('delete-place-container');
+  if (!deleteContainer) return;
+
+  try {
+    const payload = parseJwt(token);
+    if (!payload) return;
+
+    const userId = payload.sub;
+    const isAdmin = payload.is_admin;
+    
+    if (isAdmin || (place.owner && place.owner.id === userId)) {
+      deleteContainer.style.display = 'block';
+      
+      const deleteButton = document.getElementById('delete-place-button');
+      if (deleteButton) {
+        deleteButton.addEventListener('click', () => deletePlace(place.id));
+      }
+    }
+  } catch (e) {
+    console.error('Error al verificar permisos de borrado:', e);
+  }
+}
+
+async function deletePlace(placeId) {
+  if (!confirm('¿Estás seguro de que quieres eliminar este lugar? Esta acción no se puede deshacer.')) {
+    return;
+  }
+  
+  const token = getCookie('token');
+  if (!token) {
+    alert('Debes iniciar sesión para realizar esta acción');
+    return;
+  }
+  
+  try {
+    const response = await fetch(`/api/v1/places/${placeId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    if (response.ok) {
+      alert('¡Lugar eliminado con éxito!');
+      window.location.href = '/';
+    } else {
+      const data = await response.json().catch(() => ({}));
+      alert(data.msg || 'Error al eliminar el lugar');
+    }
+  } catch (error) {
+    console.error('Error al eliminar lugar:', error);
+    alert('Error de red al intentar eliminar el lugar');
   }
 }
 
@@ -351,6 +427,14 @@ async function submitReview(event) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('registered') && urlParams.get('registered') === 'true') {
+    const successMessage = document.getElementById('success-message');
+    if (successMessage) {
+      successMessage.style.display = 'block';
+    }
+  }
+
   const token = checkAuthentication();
   
   const logoutButton = document.getElementById('logout-button');

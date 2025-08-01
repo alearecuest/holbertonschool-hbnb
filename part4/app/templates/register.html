@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - HBnB</title>
+    <title>Register - HBnB</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
@@ -18,11 +18,16 @@
     </header>
     <main>
         <section class="login-form">
-            <h2>Login</h2>
-            <div id="success-message" style="color: #4dca34; margin-bottom: 15px; display: none;">
-                Registration successful! Please login with your new account.
-            </div>
-            <form id="login-form">
+            <h2>Create an Account</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="first_name">First Name:</label>
+                    <input type="text" id="first_name" name="first_name" required placeholder="John">
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name:</label>
+                    <input type="text" id="last_name" name="last_name" required placeholder="Doe">
+                </div>
                 <div class="form-group">
                     <label for="email">Email:</label>
                     <input type="email" id="email" name="email" required placeholder="user@holbertonHBnB.com">
@@ -31,17 +36,17 @@
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" required placeholder="********">
                 </div>
-                <button type="submit" class="submit-button">Login</button>
+                <button type="submit" class="submit-button">Register</button>
             </form>
             <div id="error-message" style="color: #ff2e88; margin-top: 10px; display: none;"></div>
             <p style="text-align: center; margin-top: 20px;">
-                Don't have an account? <a href="/register" class="register-link">Register here</a>
+                Already have an account? <a href="/login">Login here</a>
             </p>
         </section>
     </main>
     <footer>
         <p>&copy; 2025 Holberton School. All rights reserved.</p>
     </footer>
-    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/register.js') }}"></script>
 </body>
 </html>

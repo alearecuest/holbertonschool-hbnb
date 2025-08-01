@@ -57,7 +57,7 @@ def create_app(config_class="config.DevelopmentConfig"):
             "name": "HBnB API",
             "version": "1.0",
             "author": "HolbertonG4MVD",
-            "last_updated": "2025-07-24 14:29:05",
+            "last_updated": "2025-08-01 15:48:32",
             "documentation": "/api/v1",
             "endpoints": {
                 "users": "/api/v1/users",
@@ -75,6 +75,10 @@ def create_app(config_class="config.DevelopmentConfig"):
     @app.route('/login', methods=['GET'])
     def login():
         return render_template('login.html')
+
+    @app.route('/register', methods=['GET'])
+    def register():
+        return render_template('register.html')
 
     @app.route('/place', methods=['GET'])
     def place():
