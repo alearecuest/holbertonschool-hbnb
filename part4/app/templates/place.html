@@ -5,6 +5,21 @@
   <title>Location details</title>
   <link rel="stylesheet" href="/static/styles.css">
 </head>
+
+<nav>
+  <ul>
+    <li><a href="{{ url_for('index') }}">Home</a></li>
+    <li><a href="{{ url_for('add_place') }}">Add Place</a></li>
+    <li>
+      {% if request.cookies.get('token') %}
+        <a href="#" id="logout-button">Logout</a>
+      {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+      {% endif %}
+    </li>
+  </ul>
+</nav>
+
 <body>
   <main>
     <section id="place-details"></section>
