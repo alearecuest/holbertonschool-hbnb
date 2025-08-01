@@ -1,59 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Place Details - HBnB</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <meta charset="UTF-8">
+  <title>Location details</title>
+  <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-    <header>
-        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="login.html" class="login-button">Login</a></li>
-            </ul>
-        </nav>
-    </header>
+  <main>
+    <section id="place-details"></section>
 
-    <main style="padding: 30px;">
-        <div class="place-details" style="max-width: 800px; margin: 0 auto;">
-            <h1 style="color: var(--neon-pink); text-align: center; margin-bottom: 30px;">🌊 Sea View Apartment - Punta del Este</h1>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-                <div>
-                    <h3 style="color: var(--neon-blue);">Property Details</h3>
-                    <ul style="list-style: none; padding: 0;">
-                        <li>⭐ 4 stars</li>
-                        <li>1 bedroom</li>
-                        <li>Sea View</li>
-                        <li>Price: $250/night</li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h3 style="color: var(--neon-blue);">Amenities</h3>
-                    <div class="amenity-tags">
-                        <span class="amenity-tag">Pool</span>
-                        <span class="amenity-tag">BBQ</span>
-                        <span class="amenity-tag">Gym</span>
-                        <span class="amenity-tag">Garage</span>
-                    </div>
-                </div>
-            </div>
+    <section id="add-review" style="display: none;">
+      <h3>Add a review</h3>
+      <form id="review-form">
+        <textarea id="review-text" rows="4" placeholder="Tu opinión..." required></textarea>
+        <button type="submit">Send review</button>
+      </form>
+    </section>
+  </main>
 
-            <div style="margin-top: 40px;">
-                <h3 style="color: var(--neon-blue);">Description</h3>
-                <p style="line-height: 1.6; color: #ddd;">Beautiful apartment with direct ocean views. Modern design with high-end finishes. Perfect for couples or solo travelers looking for luxury and comfort.</p>
-            </div>
-
-            <button class="details-button" style="margin-top: 30px; width: 100%;">Add Review</button>
-        </div>
-    </main>
-
-    <footer>
-        <p>&copy; 2025 Holberton School. All rights reserved.</p>
-    </footer>
+  <script src="/static/scripts.js"></script>
 </body>
 </html>

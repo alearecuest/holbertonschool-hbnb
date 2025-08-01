@@ -186,7 +186,6 @@ class PlaceReviewList(Resource):
     @api.response(401, 'Authentication required')
     @jwt_required()
     def post(self, place_id):
-        """Create a new review for a place"""
         place = facade.get_place(place_id)
         if not place:
             api.abort(404, f"Place with ID {place_id} not found")
@@ -223,7 +222,6 @@ class PlaceAmenity(Resource):
     @api.response(401, 'Authentication required')
     @jwt_required()
     def post(self, place_id, amenity_id):
-        """Link an amenity to a place"""
         linked = facade.add_amenity_to_place(place_id, amenity_id)
         if not linked:
             api.abort(404, "Place or amenity not found")

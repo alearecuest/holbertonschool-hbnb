@@ -83,5 +83,9 @@ def create_app(config_class="config.DevelopmentConfig"):
     @app.route('/add_review', methods=['GET'])
     def add_review():
         return render_template('add_review.html')
+    
+    @app.route('/add_place', methods=['GET'])
+    def add_place():
+        return render_template('add_place.html')
 
     return app
