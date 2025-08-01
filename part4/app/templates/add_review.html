@@ -12,19 +12,12 @@
     <a href="login.html" class="login-button">Login</a>
   </header>
 
- <nav>
-  <ul>
-    <li><a href="{{ url_for('index') }}">Home</a></li>
-    <li><a href="{{ url_for('add_place') }}">Add Place</a></li>
-    <li>
-      {% if request.cookies.get('token') %}
-        <a href="#" id="logout-button">Logout</a>
-      {% else %}
-        <a href="{{ url_for('login') }}">Login</a>
-      {% endif %}
-    </li>
-  </ul>
-</nav>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+  </nav>
 
   <main>
     <section class="add-review">

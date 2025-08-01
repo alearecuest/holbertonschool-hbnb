@@ -1,37 +1,35 @@
-<!-- templates/add_place.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>HBnB - Add New Place</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/styles.css') }}"
+  >
 </head>
 <body>
-    <header>
-        <img src="{{ url_for('static', filename='images/logo.png') }}"
-        alt="HBnB Logo" class="logo">
+  <header>
+    <img
+      src="{{ url_for('static', filename='images/logo.png') }}"
+      alt="HBnB Logo"
+      class="logo"
+    >
     <nav>
       <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/login" id="login-link" class="login-button">Login</a></li>
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('add_place') }}">Add Place</a></li>
+        <li>
+          {% if request.cookies.get('token') %}
+            <a href="#" id="logout-button">Logout</a>
+          {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+          {% endif %}
+        </li>
       </ul>
     </nav>
-</header>
-
-<nav>
-  <ul>
-    <li><a href="{{ url_for('index') }}">Home</a></li>
-    <li><a href="{{ url_for('add_place') }}">Add Place</a></li>
-    <li>
-      {% if request.cookies.get('token') %}
-        <a href="#" id="logout-button">Logout</a>
-      {% else %}
-        <a href="{{ url_for('login') }}">Login</a>
-      {% endif %}
-    </li>
-  </ul>
-</nav>
+  </header>
 
   <main style="padding: 2rem; max-width: 600px; margin: auto;">
     <h1>Add a New Place</h1>
@@ -39,36 +37,72 @@
     <form id="add-place-form">
       <div class="form-group">
         <label for="title">Title *</label>
-        <input type="text" id="title" name="title" required />
+        <input
+          type="text"
+          id="title"
+          name="title"
+          required
+        />
       </div>
 
       <div class="form-group">
         <label for="description">Description</label>
-        <textarea id="description" name="description" rows="3"></textarea>
+        <textarea
+          id="description"
+          name="description"
+          rows="3"
+        ></textarea>
       </div>
 
       <div class="form-group">
         <label for="price">Price (USD) *</label>
-        <input type="number" id="price" name="price" step="0.01" min="0" required />
+        <input
+          type="number"
+          id="price"
+          name="price"
+          step="0.01"
+          min="0"
+          required
+        />
       </div>
 
       <div class="form-group">
         <label for="latitude">Latitude *</label>
-        <input type="number" id="latitude" name="latitude" step="0.000001" required />
+        <input
+          type="number"
+          id="latitude"
+          name="latitude"
+          step="0.000001"
+          required
+        />
       </div>
 
       <div class="form-group">
         <label for="longitude">Longitude *</label>
-        <input type="number" id="longitude" name="longitude" step="0.000001" required />
+        <input
+          type="number"
+          id="longitude"
+          name="longitude"
+          step="0.000001"
+          required
+        />
       </div>
 
       <div class="form-group">
-        <label for="amenities">Amenities (comma-separated IDs)</label>
-        <input type="text" id="amenities" name="amenities"
-               placeholder="e.g. a1b2c3d4, e5f6g7h8" />
+        <label for="amenities">
+          Amenities (comma-separated IDs)
+        </label>
+        <input
+          type="text"
+          id="amenities"
+          name="amenities"
+          placeholder="e.g. a1b2c3d4, e5f6g7h8"
+        />
       </div>
 
-      <button type="submit" class="btn">Create Place</button>
+      <button type="submit" class="btn">
+        Create Place
+      </button>
     </form>
 
     <div id="form-message" class="message"></div>
@@ -78,7 +112,8 @@
     <p>&copy; 2025 Holberton School. All rights reserved.</p>
   </footer>
 
-  <script src="{{ url_for('static', filename='js/add_place.js') }}"></script>
+  <script
+    src="{{ url_for('static', filename='js/add_place.js') }}"
+  ></script>
 </body>
 </html>
-```
