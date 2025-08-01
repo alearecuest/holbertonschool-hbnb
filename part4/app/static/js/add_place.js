@@ -7,42 +7,52 @@ function getCookie(name) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const form   = document.getElementById('add-place-form');
+  const form = document.getElementById('add-place-form');
   const msgDiv = document.getElementById('form-message');
-  const token  = getCookie('token');
+  const token = getCookie('token');
 
   if (!token) {
     window.location.replace('/login');
     return;
   }
+  
+  const logoutButton = document.getElementById('logout-button');
+  if (logoutButton) {
+    logoutButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.cookie = 'token=; Max-Age=0; path=/;';
+      window.location.replace('/login');
+    });
+  }
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
     msgDiv.textContent = '';
-    msgDiv.className   = 'message';
+    msgDiv.className = 'message';
 
     const body = {
-      title:       document.getElementById('title').value.trim(),
+      title: document.getElementById('title').value.trim(),
       description: document.getElementById('description').value.trim(),
-      price:       parseFloat(document.getElementById('price').value),
-      latitude:    parseFloat(document.getElementById('latitude').value),
-      longitude:   parseFloat(document.getElementById('longitude').value),
-      amenities:   document.getElementById('amenities')
-                    .value
-                    .split(',')
-                    .map(a => a.trim())
-                    .filter(a => a.length > 0)
+      price: parseFloat(document.getElementById('price').value),
+      latitude: parseFloat(document.getElementById('latitude').value),
+      longitude: parseFloat(document.getElementById('longitude').value),
+      amenities: document.getElementById('amenities')
+        .value
+        .split(',')
+        .map(a => a.trim())
+        .filter(a => a.length > 0)
     };
 
     try {
       const resp = await fetch('/api/v1/places', {
         method: 'POST',
         headers: {
-          'Content-Type':  'application/json',
+          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(body)
       });
+      
       const data = await resp.json();
 
       if (resp.ok) {
