@@ -84,7 +84,18 @@ class PlaceList(Resource):
 
         try:
             new_place = facade.create_place(place_data)
-            return facade.get_place(new_place['id']), 201
+            
+            place = facade.get_place(new_place.id)
+            return {
+                "id": place.id,
+                "title": place.title,
+                "description": place.description,
+                "price": place.price,
+                "latitude": place.latitude,
+                "longitude": place.longitude,
+                "owner_id": place.owner_id,
+            }, 201
+
         except ValueError as e:
             api.abort(400, str(e))
 

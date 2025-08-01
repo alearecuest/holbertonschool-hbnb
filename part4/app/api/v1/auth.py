@@ -2,6 +2,7 @@
 """
 Authentication API endpoints
 """
+
 from flask import request, jsonify
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import (
@@ -73,7 +74,20 @@ class Login(Resource):
         )
         refresh_token = create_refresh_token(identity=str(user.id))
 
-        return {'access_token': access_token, 'refresh_token': refresh_token}, 200
+        response = jsonify({
+            'access_token': access_token,
+            'refresh_token': refresh_token
+        })
+
+        response.set_cookie(
+            'token',
+            access_token,
+            httponly=False,
+            path='/',
+            samesite='Lax'
+        )
+
+        return response
 
 @api.route('/refresh')
 class TokenRefresh(Resource):

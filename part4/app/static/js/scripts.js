@@ -1,126 +1,114 @@
-const checkAuth = () => {
-    const cookies = document.cookie.split(';');
-    const token = cookies.find(cookie => cookie.trim().startsWith('token='));
-    return token !== null;
-};
+// app/static/js/scripts.js
 
-if (!checkAuth() && window.location.pathname !== '/login') {
-    window.location.href = '/login';
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    checkAuthentication();
-
-    const loginForm = document.getElementById('login-form');
-    const errorDiv = document.getElementById('error-message');
-
-    if (loginForm) {
-        loginForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
-
-            if (!email || !password) {
-                errorDiv.textContent = 'Please enter your email and password.';
-                errorDiv.style.display = 'block';
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/v1/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email, password }),
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    document.cookie = `token=${data.access_token}; path=/; max-age=${24 * 60 * 60}`;
-                    window.location.href = '/';
-                } else {
-                    const errorData = await response.json();
-                    errorDiv.textContent = errorData.msg || 'Login failed.';
-                    errorDiv.style.display = 'block';
-                }
-            } catch (error) {
-                errorDiv.textContent = 'Could not connect to the server.';
-                errorDiv.style.display = 'block';
-            }
-        });
-    }
-});
-
-function checkAuthentication() {
-    const token = getCookie('token');
-    const loginLink = document.getElementById('login-link');
-
-    if (!token) {
-        if (loginLink) loginLink.style.display = 'block';
-    } else {
-        if (loginLink) loginLink.style.display = 'none';
-        fetchPlaces(token);
-    }
-}
-
+/**
+ * Safely read a cookie by name.
+ */
 function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 1) return parts.pop().split(';').shift();
-    return null;
+  const pairs = document.cookie.split(/;\s*/);
+  for (let pair of pairs) {
+    const [key, ...vals] = pair.split('=');
+    if (key === name) return vals.join('=');
+  }
+  return null;
 }
 
 async function fetchPlaces(token) {
-    try {
-        const response = await fetch('/api/v1/places', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (response.ok) {
-            const places = await response.json();
-            displayPlaces(places);
-        } else {
-            console.error('Failed to fetch places:', response.statusText);
-        }
-    } catch (error) {
-        console.error('Error fetching places:', error);
-    }
+  try {
+    const res = await fetch('/api/v1/places', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (!res.ok) return console.error('Failed to fetch places');
+    const places = await res.json();
+    displayPlaces(places);
+  } catch (err) {
+    console.error('Error fetching places:', err);
+  }
 }
 
 function displayPlaces(places) {
-    const placesList = document.getElementById('places-list');
-    if (!placesList) return;
-    
-    placesList.innerHTML = '';
-    
-    places.forEach(place => {
-        const placeElement = document.createElement('div');
-        placeElement.className = 'place-card';
-        placeElement.dataset.price = place.price;
-        placeElement.innerHTML = `
-            <h3>${place.name || 'Unnamed Property'}</h3>
-            <p>⭐ ${place.rating || 'N/A'} stars</p>
-            <p>${place.description || 'No description'}</p>
-            <p style="color: #aaa; margin-top: 15px;">Price per night: $${place.price}</p>
-            <button class="details-button">View Details</button>
-        `;
-        placesList.appendChild(placeElement);
-    });
+  const container = document.getElementById('places-list');
+  container.innerHTML = '';
+  places.forEach(place => {
+    const div = document.createElement('div');
+    div.className = 'place-card';
+    div.dataset.price = place.price;
+    div.innerHTML = `
+      <h3>${place.title || 'Unnamed Property'}</h3>
+      <p>${place.description || 'No description'}</p>
+      <p>Price: $${place.price}</p>
+      <button class="details-button">View Details</button>
+    `;
+    container.appendChild(div);
+  });
 }
 
-document.getElementById('price-filter').addEventListener('change', (event) => {
-    const selectedValue = event.target.value;
-    const maxPrice = selectedValue === 'All' ? Infinity : parseFloat(selectedValue);
-    const places = document.querySelectorAll('.place-card');
+function applyPriceFilter() {
+  const max = document.getElementById('price-filter').value;
+  const maxPrice = max === 'All' ? Infinity : +max;
+  document.querySelectorAll('.place-card').forEach(c => {
+    c.style.display = (+c.dataset.price <= maxPrice ? 'block' : 'none');
+  });
+}
 
-    places.forEach(place => {
-        const price = parseFloat(place.dataset.price);
-        place.style.display = price <= maxPrice ? 'block' : 'none';
+document.addEventListener('DOMContentLoaded', () => {
+  const token     = getCookie('token');
+  const loginLink = document.getElementById('login-link');
+
+  // 1) Redirigir a /login si no estamos autenticados y no estamos ya en /login
+  if (!token && window.location.pathname !== '/login') {
+    window.location.replace('/login');
+    return;
+  }
+
+  // 2) Mostrar siempre el enlace Login
+  if (loginLink) loginLink.style.display = 'block';
+
+  // 3) Si hay token, cargar propiedades
+  if (token) {
+    fetchPlaces(token);
+  }
+
+  // 4) Vincular filtro de precio
+  const priceFilter = document.getElementById('price-filter');
+  if (priceFilter) {
+    priceFilter.addEventListener('change', applyPriceFilter);
+  }
+
+  // 5) Lógica de login en /login
+  const loginForm = document.getElementById('login-form');
+  if (loginForm) {
+    const errorDiv = document.getElementById('error-message');
+    loginForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!email || !password) {
+        errorDiv.textContent = 'Please, enter mail and password.';
+        errorDiv.style.display = 'block';
+        return;
+      }
+      try {
+        const res = await fetch('/api/v1/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const body = await res.json();
+        if (!res.ok) {
+          errorDiv.textContent = body.msg || 'Login error.';
+          errorDiv.style.display = 'block';
+          return;
+        }
+        document.cookie = `token=${body.access_token}; path=/; max-age=${24*60*60}`;
+        window.location.replace('/');
+      } catch {
+        errorDiv.textContent = 'Could not connect to the server.';
+        errorDiv.style.display = 'block';
+      }
     });
+  }
 });
